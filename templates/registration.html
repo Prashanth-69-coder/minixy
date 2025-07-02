@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f7f7f7;
+            color: #1c1c1e;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-image: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1c1c1e;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c2c2e;
+            font-size: 14px;
+        }
+
+        .required {
+            color: #ff3b30;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            color: #1c1c1e;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .skills-container {
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .skills-container:focus-within {
+            border-color: #ff6b6b;
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .skills-input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .skills-input {
+            flex: 1;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .add-skill-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+
+        .add-skill-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-tag {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            color: #1c1c1e;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+
+        .remove-skill {
+            background: none;
+            border: none;
+            color: #1c1c1e;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 0;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-display {
+            width: 100%;
+            padding: 15px;
+            border: 2px dashed rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .file-input-display:hover {
+            border-color: #ff6b6b;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 30px 20px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .form-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1 class="form-title">Create Your Profile</h1>
+
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="userName">Username <span class="required">*</span></label>
+                <input type="text" id="userName" name="userName" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName">
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" name="lastName">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="role">Role <span class="required">*</span></label>
+                <select id="role" name="role" required>
+                    <option value="">Select your role</option>
+                    <option value="student">Student</option>
+                    <option value="alumni">Alumni</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="bio">Bio</label>
+                <textarea id="bio" name="bio" placeholder="Tell us about yourself..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Skills</label>
+                <div class="skills-container">
+                    <div class="skills-input-container">
+                        <input type="text" class="skills-input" id="skillInput" placeholder="Enter a skill">
+                        <button type="button" class="add-skill-btn" onclick="addSkill()">Add</button>
+                    </div>
+                    <div class="skills-list" id="skillsList"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="experience">Experience</label>
+                <textarea id="experience" name="experience" placeholder="Describe your work experience, projects, or achievements..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Profile Picture</label>
+                <div class="file-input-wrapper">
+                    <input type="file" class="file-input" id="profilePicture" name="profilePicture" accept="image/*">
+                    <div class="file-input-display" onclick="document.getElementById('profilePicture').click()">
+                        <span id="fileDisplayText">Click to upload profile picture</span>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Create Profile</button>
+        </form>
+    </div>
+
+    <script>
+        let skills = [];
+
+        function addSkill() {
+            const skillInput = document.getElementById('skillInput');
+            const skill = skillInput.value.trim();
+
+            if (skill && !skills.includes(skill)) {
+                skills.push(skill);
+                renderSkills();
+                skillInput.value = '';
+            }
+        }
+
+        function removeSkill(skillToRemove) {
+            skills = skills.filter(skill => skill !== skillToRemove);
+            renderSkills();
+        }
+
+        function renderSkills() {
+            const skillsList = document.getElementById('skillsList');
+            skillsList.innerHTML = '';
+
+            skills.forEach(skill => {
+                const skillTag = document.createElement('div');
+                skillTag.className = 'skill-tag';
+                skillTag.innerHTML = `
+                    ${skill}
+                    <button type="button" class="remove-skill" onclick="removeSkill('${skill}')">×</button>
+                `;
+                skillsList.appendChild(skillTag);
+            });
+        }
+
+        // Handle Enter key in skills input
+        document.getElementById('skillInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addSkill();
+            }
+        });
+
+        // Handle file input display
+        document.getElementById('profilePicture').addEventListener('change', function(e) {
+            const fileDisplayText = document.getElementById('fileDisplayText');
+            if (e.target.files.length > 0) {
+                fileDisplayText.textContent = e.target.files[0].name;
+            } else {
+                fileDisplayText.textContent = 'Click to upload profile picture';
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = {
+                userName: document.getElementById('userName').value,
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                role: document.getElementById('role').value,
+                bio: document.getElementById('bio').value,
+                skills: skills,
+                experience: document.getElementById('experience').value,
+                profilePicture: document.getElementById('profilePicture').files[0]
+            };
+
+            // Validation
+            if (!formData.userName || !formData.role) {
+                alert('Please fill in all required fields (Username and Role)');
+                return;
+            }
+
+            // Log the form data (in a real app, you'd send this to your backend)
+            console.log('Registration Data:', formData);
+            alert('Profile created successfully! Check the console for the submitted data.');
+        });
+    </script>
+</body>
+</html>
