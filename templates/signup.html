@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Minixy - Login</title>
+  <title>Minixy - Sign Up</title>
   <style>
     /* Base Styles */
     * {
@@ -205,28 +205,30 @@
       <h1 class="brand-name">Minixy</h1>
     </div>
 
+    {% if success %}
+    <div style="background: linear-gradient(to right, #a18cd1, #fbc2eb); color: white; border-radius: 10px; padding: 14px; text-align: center; margin-bottom: 18px; font-weight: 600; font-size: 18px;">
+      Signup successfully!
+    </div>
+    {% endif %}
+
     <div class="tabs">
-      <div class="tab active">Login</div>
-      <a href="signup.html" class="tab">Sign Up</a>
+      <a href="login.html" class="tab">Login</a>
+      <div class="tab active">Sign Up</div>
     </div>
 
-    <form class="auth-form" action="/api/login" method="post">
+    <form class="auth-form" action="/api/signup" method="post">
       <div class="form-group">
         <input name="email" type="email" class="form-control" placeholder="Email" required />
       </div>
-      <div class="form-group" style="margin-bottom: 10px;">
+      <div class="form-group">
         <input name="password" type="password" class="form-control" placeholder="Password" required />
       </div>
-      <button type="submit" class="btn btn-primary">Continue</button>
+      <button type="submit" class="btn btn-primary">Create Account</button>
       <div class="divider">or</div>
-      <button type="button" class="btn btn-secondary" style="margin-top: 10px;">
-        <span style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-          <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/9cf00ced-d640-4f7f-b9d3-ce6f57ffc5ee.png" alt="Google icon" width="20" height="20">
-          Continue with Google
-        </span>
-      </button>
+      <button type="button" class="btn btn-secondary">Continue with Google</button>
       <div class="footer-links">
-        <a href="#">Forgot password?</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Privacy Policy</a>
       </div>
     </form>
   </div>

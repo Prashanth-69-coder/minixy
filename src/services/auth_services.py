@@ -7,9 +7,9 @@ class AuthService:
         self.repository = AuthRepository()
 
     def signup_user(self,email,password):
-        return self.repository.signup_user(email,password)
+        user = self.repository.signup_user(email,password)
+        return user
 
     def login_user(self,email,password):
         return self.repository.login_user(email,password)
-
 

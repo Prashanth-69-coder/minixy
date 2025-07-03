@@ -6,15 +6,21 @@ from dotenv import load_dotenv
 class AuthRepository:
     def __init__(self):
         load_dotenv()
+        supabase_url = "https://drkvofasyisiqdqxbegu.supabase.co"
+        supabase_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRya3ZvZmFzeWlzaXFkcXhiZWd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA3ODY4MTQsImV4cCI6MjA2NjM2MjgxNH0.2psBWqHo8qqFEdg4JimWWEFFWxsX1oHxR5pnOWg-5fI"
 
-        self.supabase = create_client(os.getenv("supabase_url"),os.getenv("supabase_key"))
+        self.supabase = create_client(supabase_url,supabase_key)
 
     def signup_user(self,email,password):
-        user = self.supabase.auth.sing_up({'email':email,'password':password})
+        user = self.supabase.auth.sign_up({'email':email,'password':password})
         return user
 
     def login_user(self,email,password):
-        user = self.supabase.auth.singin({'email':email,'password':password})
+        user = self.supabase.auth.sign_in_with_password({'email':email,'password':password})
+        return user
+    
+    def current_user(self,session_token):
+        user = self.supabase.auth.get_user(session_token)
         return user
 
 

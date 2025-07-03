@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #f7f7f7;
+            color: #1c1c1e;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-image: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .profile-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .profile-pic {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #fff;
+            font-weight: 700;
+            border: 4px solid #fff;
+            box-shadow: 0 4px 16px rgba(255, 154, 158, 0.2);
+        }
+        .profile-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1c1c1e;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .profile-field {
+            width: 100%;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+        .profile-label {
+            font-weight: 600;
+            color: #2c2c2e;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+        .profile-value {
+            font-size: 1.1rem;
+            color: #4a4a4a;
+            background: rgba(255,255,255,0.7);
+            border-radius: 8px;
+            padding: 10px 14px;
+            border: 1px solid #f3c6c6;
+        }
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .skill-tag {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            color: #1c1c1e;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .profile-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            -webkit-appearance: none;
+        }
+        .btn-primary {
+            background-image: linear-gradient(to right, #a18cd1, #fbc2eb);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 122, 255, 0.2);
+        }
+        .btn-primary:hover {
+            background-color: #0062cc;
+        }
+        .btn-secondary {
+            background-color: transparent;
+            color: #007aff;
+            border: 1px solid #d1d1d6;
+        }
+        .btn-secondary:hover {
+            background-color: rgba(0, 122, 255, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-pic">
+            <img src="https://ui-avatars.com/api/?name=John+Doe&background=ff9a9e&color=fff&size=110" alt="Profile Picture" class="profile-pic" />
+        </div>
+        <div class="profile-title">John Doe</div>
+        <div class="profile-field">
+            <span class="profile-label">Username</span>
+            <span class="profile-value">johndoe123</span>
+        </div>
+        <div class="profile-field" style="display: flex; gap: 12px;">
+            <div style="flex:1;">
+                <span class="profile-label">First Name</span>
+                <span class="profile-value">John</span>
+            </div>
+            <div style="flex:1;">
+                <span class="profile-label">Last Name</span>
+                <span class="profile-value">Doe</span>
+            </div>
+        </div>
+        <div class="profile-field">
+            <span class="profile-label">Role</span>
+            <span class="profile-value">Student</span>
+        </div>
+        <div class="profile-field">
+            <span class="profile-label">Bio</span>
+            <span class="profile-value">Aspiring developer passionate about building cool things and learning new technologies.</span>
+        </div>
+        <div class="profile-field">
+            <span class="profile-label">Skills</span>
+            <div class="skills-list">
+                <span class="skill-tag">Python</span>
+                <span class="skill-tag">FastAPI</span>
+                <span class="skill-tag">HTML</span>
+                <span class="skill-tag">CSS</span>
+            </div>
+        </div>
+        <div class="profile-field">
+            <span class="profile-label">Experience</span>
+            <span class="profile-value">Worked on several web projects, contributed to open source, and participated in hackathons.</span>
+        </div>
+        <div class="profile-actions">
+            <button class="btn btn-primary">Edit Profile</button>
+            <button class="btn btn-secondary">Logout</button>
+        </div>
+    </div>
+</body>
+</html> 

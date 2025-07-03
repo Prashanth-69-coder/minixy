@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Minixy - Home</title>
+    <meta name="description" content="Minixy Home Page" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      body {
+        background-color: #f7f7f7;
+        background-image: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      }
+      .brand-logo {
+        width: 48px;
+        height: 48px;
+        background-image: linear-gradient(to right, #ff9a9e, #fad0c4);
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-weight: 700;
+        font-size: 22px;
+      }
+      .brand-name {
+        font-size: 26px;
+        font-weight: 700;
+        color: #1c1c1e;
+        letter-spacing: -0.5px;
+      }
+      .btn-primary {
+        background-image: linear-gradient(to right, #a18cd1, #fbc2eb);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 16px 36px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 10px rgba(0, 122, 255, 0.12);
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-primary:hover {
+        background-color: #a18cd1;
+      }
+      .btn-secondary {
+        background-color: transparent;
+        color: #007aff;
+        border: 1px solid #d1d1d6;
+        border-radius: 12px;
+        padding: 16px 36px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-secondary:hover {
+        background-color: rgba(0, 122, 255, 0.05);
+      }
+      .hero-title {
+        font-size: 44px;
+        font-weight: 800;
+        background: linear-gradient(to right, #a18cd1, #fbc2eb);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+        margin-bottom: 18px;
+      }
+      .hero-desc {
+        font-size: 22px;
+        color: #555;
+        margin-bottom: 36px;
+      }
+      .cta-btns {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 32px;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-white">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <!-- Logo -->
+          <div class="flex items-center">
+            <div class="flex-shrink-0 flex items-center space-x-2">
+              <div class="brand-logo">M</div>
+              <h1 class="brand-name">Minixy</h1>
+            </div>
+          </div>
+          <!-- Search Bar -->
+          <div class="flex-1 max-w-lg mx-8">
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <!-- Search Icon -->
+                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              </div>
+              <input type="text" placeholder="Search alumni, mentors, jobs..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-gray-50 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500" />
+            </div>
+          </div>
+          <!-- Navigation -->
+          <nav class="flex items-center space-x-8">
+            <div class="flex items-center space-x-1 text-gray-600 hover:text-blue-600 cursor-pointer">
+              <!-- Users Icon -->
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+              <span class="text-sm font-medium">Mentorship</span>
+            </div>
+            <div class="flex items-center space-x-1 text-gray-600 hover:text-blue-600 cursor-pointer">
+              <!-- Briefcase Icon -->
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3v4M8 3v4"/></svg>
+              <span class="text-sm font-medium">Jobs</span>
+            </div>
+            <div class="flex items-center space-x-1 text-gray-600 hover:text-blue-600 cursor-pointer">
+              <!-- MessageSquare Icon -->
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              <span class="text-sm font-medium">Forums</span>
+            </div>
+            <div class="flex items-center space-x-1 text-gray-600 hover:text-blue-600 cursor-pointer">
+              <!-- Bell Icon -->
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+              <span class="text-sm font-medium">Events</span>
+            </div>
+            <!-- Profile -->
+            <div class="flex items-center cursor-pointer">
+              <div class="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
+                <span class="text-sm font-medium text-gray-600">Me</span>
+              </div>
+            </div>
+            <!-- Sign In Button -->
+            <button class="bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors">
+              Join Now
+            </button>
+          </nav>
+        </div>
+      </div>
+    </header>
+    <!-- Hero Section -->
+    <section class="py-20" style="background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <!-- Left Content -->
+          <div class="space-y-8">
+            <div class="space-y-4">
+              <h1 class="hero-title">
+                Connect Students with
+                <span style="display:block">Alumni Success</span>
+              </h1>
+              <p class="hero-desc">
+                Bridge the gap between academic learning and professional success. Get mentorship, job referrals, and career guidance from experienced alumni.
+              </p>
+            </div>
+            <div class="cta-btns">
+              <a href="/login" class="btn-primary">Login</a>
+              <a href="/signup" class="btn-secondary">Sign Up</a>
+            </div>
+            <div class="flex items-center space-x-8 text-gray-600">
+              <div class="text-center">
+                <div class="text-2xl font-bold text-gray-900">5,000+</div>
+                <div class="text-sm">Active Alumni</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-gray-900">1,200+</div>
+                <div class="text-sm">Mentorship Pairs</div>
+              </div>
+              <div class="text-center">
+                <div class="text-2xl font-bold text-gray-900">800+</div>
+                <div class="text-sm">Job Referrals</div>
+              </div>
+            </div>
+          </div>
+          <!-- Right Content - Platform Preview -->
+          <div class="relative">
+            <div class="bg-white rounded-2xl shadow-xl p-8">
+              <div class="space-y-6">
+                <div class="flex items-center space-x-4">
+                  <div class="h-16 w-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                    SA
+                  </div>
+                  <div>
+                    <h3 class="font-semibold text-gray-900">Sarah Anderson</h3>
+                    <p class="text-gray-600">Software Engineer at Google</p>
+                    <p class="text-sm text-blue-600">Available for Mentorship</p>
+                  </div>
+                </div>
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-600">Mentorship Sessions</span>
+                    <span class="text-sm font-medium text-gray-900">12 completed</span>
+                  </div>
+                  <div class="h-2 bg-gray-200 rounded-full">
+                    <div class="h-2 bg-green-500 rounded-full w-4/5"></div>
+                  </div>
+                </div>
+                <div class="pt-4 border-t border-gray-200">
+                  <div class="flex items-center space-x-4 mb-3">
+                    <!-- MessageSquare Icon -->
+                    <svg class="h-4 w-4 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                    <span class="text-sm font-medium text-gray-700">Recent Activity</span>
+                  </div>
+                  <div class="space-y-2">
+                    <div class="flex items-center space-x-2 text-sm">
+                      <div class="h-2 w-2 bg-green-500 rounded-full"></div>
+                      <span class="text-gray-700">Referred 2 students for internships</span>
+                    </div>
+                    <div class="flex items-center space-x-2 text-sm">
+                      <div class="h-2 w-2 bg-blue-500 rounded-full"></div>
+                      <span class="text-gray-700">Hosted AMA session on Tech Careers</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Features Section -->
+    <section class="py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">
+            Everything you need to launch your career
+          </h2>
+          <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+            Alumni Connect bridges the gap between academic learning and professional success. 
+            Get mentorship, job opportunities, and career guidance from our network of successful alumni.
+          </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Feature 1 -->
+          <div class="group p-8 rounded-2xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300">
+            <div class="flex items-center mb-4">
+              <div class="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-300">
+                <!-- Users Icon -->
+                <svg class="h-6 w-6 text-blue-600 group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+              </div>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-3">Mentorship Matching</h3>
+            <p class="text-gray-600 leading-relaxed">Connect with experienced alumni mentors who can guide your career journey and share industry insights.</p>
+          </div>
+          <!-- Feature 2 -->
+          <div class="group p-8 rounded-2xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300">
+            <div class="flex items-center mb-4">
+              <div class="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-300">
+                <!-- Briefcase Icon -->
+                <svg class="h-6 w-6 text-blue-600 group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3v4M8 3v4"/></svg>
+              </div>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-3">Job Referral System</h3>
+            <p class="text-gray-600 leading-relaxed">Submit referral requests and get recommended for positions by alumni working in your target companies.</p>
+          </div>
+          <!-- Feature 3 -->
+          <div class="group p-8 rounded-2xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300">
+            <div class="flex items-center mb-4">
+              <div class="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-300">
+                <!-- MessageSquare Icon -->
+                <svg class="h-6 w-6 text-blue-600 group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              </div>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-3">Discussion Forums</h3>
+            <p class="text-gray-600 leading-relaxed">Engage in industry-specific discussions, ask questions, and share knowledge with the community.</p>
+          </div>
+          <!-- Feature 4 -->
+          <div class="group p-8 rounded-2xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300">
+            <div class="flex items-center mb-4">
+              <div class="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-300">
+                <!-- Calendar Icon -->
+                <svg class="h-6 w-6 text-blue-600 group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              </div>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-3">AMA Sessions</h3>
+            <p class="text-gray-600 leading-relaxed">Join live Ask Me Anything sessions with successful alumni and gain valuable career insights.</p>
+          </div>
+          <!-- Feature 5 -->
+          <div class="group p-8 rounded-2xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300">
+            <div class="flex items-center mb-4">
+              <div class="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-300">
+                <!-- Award Icon -->
+                <svg class="h-6 w-6 text-blue-600 group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><path d="M8.21 13.89l-1.42 4.25a1 1 0 001.3 1.3l4.25-1.42a1 1 0 00.7-.7l1.42-4.25a1 1 0 00-1.3-1.3l-4.25 1.42a1 1 0 00-.7.7z"/></svg>
+              </div>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-3">Skill Development</h3>
+            <p class="text-gray-600 leading-relaxed">Access personalized guidance on developing in-demand skills for your chosen career path.</p>
+          </div>
+          <!-- Feature 6 -->
+          <div class="group p-8 rounded-2xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300">
+            <div class="flex items-center mb-4">
+              <div class="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-300">
+                <!-- TrendingUp Icon -->
+                <svg class="h-6 w-6 text-blue-600 group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              </div>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-3">Career Growth</h3>
+            <p class="text-gray-600 leading-relaxed">Track your professional development and get advice on advancing in your field from experienced professionals.</p>
+          </div>
+        </div>
+        <div class="mt-16 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8">
+          <div class="text-center">
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Ready to connect with alumni?</h3>
+            <p class="text-gray-600 mb-6">Join thousands of students who have already accelerated their careers through our platform.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+              <button class="bg-blue-600 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-blue-700 transition-colors">
+                Join as Student
+              </button>
+              <button class="border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-full text-lg font-semibold hover:bg-blue-50 transition-colors">
+                Join as Alumni
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Footer -->
+    <footer class="bg-gray-100 pt-16 pb-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+          <!-- Logo and Description -->
+          <div class="lg:col-span-1">
+            <h3 class="text-2xl font-bold text-blue-600 mb-4">Alumni Connect</h3>
+            <p class="text-gray-600 text-sm leading-relaxed">
+              Bridging the gap between academic learning and professional success through meaningful alumni connections.
+            </p>
+          </div>
+          <!-- Footer Links -->
+          <div class="lg:col-span-1">
+            <h4 class="font-semibold text-gray-900 mb-4">For Students</h4>
+            <ul class="space-y-3">
+              <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm transition-colors">Find Mentors</a></li>
+              <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm transition-colors">Job Referrals</a></li>
+              <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm transition-colors">Career Guidance</a></li>
+              <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm transition-colors">Skill Development</a></li>
+              <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm transition-colors">Discussion Forums</a></li>
+            </ul>
+          </div>
+          <div class="lg:col-span-1">
+            <h4 class="font-semibold text-gray-900 mb-4">For Alumni</h4>
+            <ul class="space-y-3">
+              <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm transition-colors">Become a Mentor</a></li>
+              <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm transition-colors">Post Jobs</a></li>
+              <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm transition-colors">Host AMA</a></li>
+              <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm transition-colors">Share Experience</a></li>
+              <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm transition-colors">Give Back</a></li>
+            </ul>
+          </div>
+          <div class="lg:col-span-1">
+            <h4 class="font-semibold text-gray-900 mb-4">Platform</h4>
+            <ul class="space-y-3">
+              <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm transition-colors">How it Works</a></li>
+              <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm transition-colors">Success Stories</a></li>
+              <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm transition-colors">Events</a></li>
+              <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm transition-colors">Resources</a></li>
+              <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm transition-colors">Blog</a></li>
+            </ul>
+          </div>
+          <div class="lg:col-span-1">
+            <h4 class="font-semibold text-gray-900 mb-4">Support</h4>
+            <ul class="space-y-3">
+              <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm transition-colors">Help Center</a></li>
+              <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm transition-colors">Contact Us</a></li>
+              <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm transition-colors">FAQ</a></li>
+              <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm transition-colors">Guidelines</a></li>
+              <li><a href="#" class="text-gray-600 hover:text-blue-600 text-sm transition-colors">Community Rules</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="border-t border-gray-200 mt-12 pt-8">
+          <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-6 mb-4 md:mb-0">
+              <p class="text-gray-600 text-sm">Alumni Connect © 2024</p>
+              <div class="flex space-x-6 text-sm">
+                <a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">Privacy Policy</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">Terms of Service</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">Code of Conduct</a>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="text-gray-600 text-sm">Made with ❤️ for students and alumni</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html> 
