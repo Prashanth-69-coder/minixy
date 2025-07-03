@@ -205,9 +205,15 @@
       <h1 class="brand-name">Minixy</h1>
     </div>
 
+    {% if request.query_params.get('signup') == 'success' %}
+    <div style="background: linear-gradient(to right, #a18cd1, #fbc2eb); color: white; border-radius: 10px; padding: 14px; text-align: center; margin-bottom: 18px; font-weight: 600; font-size: 18px;">
+      Signup successful! Please log in.
+    </div>
+    {% endif %}
+
     <div class="tabs">
       <div class="tab active">Login</div>
-      <a href="signup.html" class="tab">Sign Up</a>
+      <a href="/signup" class="tab">Sign Up</a>
     </div>
 
     <form class="auth-form" action="/api/login" method="post">

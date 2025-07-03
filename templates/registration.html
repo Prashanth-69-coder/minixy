@@ -251,6 +251,7 @@
         <h1 class="form-title">Create Your Profile</h1>
 
         <form id="registrationForm" name="createProfileForm" action="/api/create_profile" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="email" value="{{ request.query_params.get('email', '') }}">
             <div class="form-group">
                 <label for="userName">Username <span class="required">*</span></label>
                 <input type="text" id="userName" name="user_name" required>
@@ -372,32 +373,6 @@
             } else {
                 fileDisplayText.textContent = 'Click to upload profile picture';
             }
-        });
-
-        // Handle form submission
-        document.getElementById('registrationForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const formData = {
-                userName: document.getElementById('userName').value,
-                firstName: document.getElementById('firstName').value,
-                lastName: document.getElementById('lastName').value,
-                role: document.getElementById('role').value,
-                bio: document.getElementById('bio').value,
-                skills: skills,
-                experience: document.getElementById('experience').value,
-                profilePicture: document.getElementById('profilePicture').files[0]
-            };
-
-            // Validation
-            if (!formData.userName || !formData.role) {
-                alert('Please fill in all required fields (Username and Role)');
-                return;
-            }
-
-            // Log the form data (in a real app, you'd send this to your backend)
-            console.log('Registration Data:', formData);
-            alert('Profile created successfully! Check the console for the submitted data.');
         });
     </script>
 </body>

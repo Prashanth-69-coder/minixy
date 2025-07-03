@@ -55,63 +55,31 @@ def get_signup(request:Request):
     return templates.TemplateResponse("signup.html",{"request":request})
 
 @router.post('/api/signup')
-def make_signup(request:Request,email:str =Form(...),password:str = Form(...)):
+def make_signup(request: Request, email: str = Form(...), password: str = Form(...)):
     try:
         user_service = AuthService()
-        res = user_service.signup_user(email,password)
+        res = user_service.signup_user(email, password)
         if res:
-            return templates.TemplateResponse("registration.html",{"request":request})
+            # Redirect to login with signup success message
+            response = RedirectResponse(url="/login?signup=success", status_code=303)
+            return response
         else:
-            return templates.TemplateResponse("login.html",{"request":request})
+            return templates.TemplateResponse("login.html", {"request": request, "error": "Signup failed."})
     except Exception as e:
-        return templates.TemplateResponse("login.html",{"request":request})
+        return templates.TemplateResponse("login.html", {"request": request, "error": "Signup failed."})
 
-
-@router.post('/api/create_profile')
-def create_profile(request: Request,
-                  user_name: str = Form(...),
-                  first_name: str = Form(...),
-                  last_name: str = Form(...),
-                  role: str = Form(...),
-                  bio: str = Form(...),
-                  skills: str = Form(...),
-                  experience: str = Form(...),
-                  profile_picture: str = Form(None)):
-    try:
-        user_id = request.session.get('user_id')
-        skills_list = [s.strip() for s in skills.split(',') if s.strip()]
-        user_service = ProfileService()
-        res = user_service.create_user_profile(user_id, user_name, first_name, last_name, role, bio, skills_list, experience, profile_picture)
-        if res:
-            return templates.TemplateResponse("signup.html", {"request": request, "success": True})
-        else:
-            return templates.TemplateResponse("registration.html", {"request": request})
-    except Exception as e:
-        return templates.TemplateResponse("login.html", {"request": request})
-
-@router.get('/api/profile')
-def get_profile(request:Request):
-    try:
-        user_id = request.session.get('user_id')
-        user_service = ProfileService()
-        res = user_service.get_user_profile(user_id)
-        if res:
-            return templates.TemplateResponse("profile.html",{"request":request,"user":res})
-        else:
-            return templates.TemplateResponse("login.html",{"request":request})
-    except Exception as e:
-        return templates.TemplateResponse("login.html",{"request":request})
 
             
 @router.post('/api/login')
 def make_login(request: Request, email: str = Form(...), password: str = Form(...)):
     try:
+        print('Login attempt: email=', email, 'password=', password)
         user_service = AuthService()
         res = user_service.login_user(email, password)
-
+        print('Login result:', res)
         if res and res.session and res.session.access_token:
             response = RedirectResponse(
-                url="/api/profile",
+                url=f"/registration?email={email}",
                 status_code=status.HTTP_303_SEE_OTHER
             )
             response.set_cookie(
@@ -122,14 +90,18 @@ def make_login(request: Request, email: str = Form(...), password: str = Form(..
                 samesite='lax',
                 max_age=3600
             )
+            print('Login successful, redirecting to /registration')
             return response
         else:
-            # optionally you can add error message to context
+            print('Login failed: Invalid credentials')
             return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid credentials"})
-    
     except Exception as e:
-        # logging the error would be helpful in production
+        print('Login exception:', e)
         return templates.TemplateResponse("login.html", {"request": request, "error": "Something went wrong. Try again."})
+
+@router.get('/registration')
+def registration_page(request: Request):
+    return templates.TemplateResponse("registration.html", {"request": request})
 
 
 
