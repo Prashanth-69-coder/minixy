@@ -29,7 +29,7 @@ def get_home(request:Request):
     user = logged_user(request)
     if user:
         return RedirectResponse(
-            url="/api/profile",
+            url="/dashboard",
             status_code=status.HTTP_303_SEE_OTHER
         )
     return templates.TemplateResponse("homepage.html",{"request":request})
@@ -37,9 +37,10 @@ def get_home(request:Request):
 @router.get('/login')
 def get_login(request: Request):
     user = logged_user(request)
+    print('user from logged_user:', user)
     if user:
         return RedirectResponse(
-            url="/api/profile",
+            url="/dashboard",
             status_code=status.HTTP_303_SEE_OTHER
             
         )
@@ -50,22 +51,27 @@ def get_signup(request:Request):
     user = logged_user(request)
     if user:
         return RedirectResponse(
-            url="/api/profile",
+            url="/dashboard",
             status_code=status.HTTP_303_SEE_OTHER)
     return templates.TemplateResponse("signup.html",{"request":request})
 
 @router.post('/api/signup')
 def make_signup(request: Request, email: str = Form(...), password: str = Form(...)):
     try:
+        print('Signup attempt: email=', email, 'password=', password)
         user_service = AuthService()
         res = user_service.signup_user(email, password)
+        print('Signup result:', res)
         if res:
             # Redirect to login with signup success message
             response = RedirectResponse(url="/login?signup=success", status_code=303)
+            print('Signup successful, redirecting to /login?signup=success')
             return response
         else:
+            print('Signup failed: No result returned')
             return templates.TemplateResponse("login.html", {"request": request, "error": "Signup failed."})
     except Exception as e:
+        print('Signup exception:', e)
         return templates.TemplateResponse("login.html", {"request": request, "error": "Signup failed."})
 
 
@@ -79,7 +85,7 @@ def make_login(request: Request, email: str = Form(...), password: str = Form(..
         print('Login result:', res)
         if res and res.session and res.session.access_token:
             response = RedirectResponse(
-                url=f"/registration?email={email}",
+                url="/dashboard",
                 status_code=status.HTTP_303_SEE_OTHER
             )
             response.set_cookie(
@@ -90,7 +96,7 @@ def make_login(request: Request, email: str = Form(...), password: str = Form(..
                 samesite='lax',
                 max_age=3600
             )
-            print('Login successful, redirecting to /registration')
+            print('Login successful, redirecting to /dashboard')
             return response
         else:
             print('Login failed: Invalid credentials')
@@ -102,6 +108,21 @@ def make_login(request: Request, email: str = Form(...), password: str = Form(..
 @router.get('/registration')
 def registration_page(request: Request):
     return templates.TemplateResponse("registration.html", {"request": request})
+
+@router.get('/dashboard')
+def dashboard_page(request: Request):
+    return templates.TemplateResponse("dashboard.html", {"request": request})
+
+@router.get('/details')
+def get_details(request: Request):
+    return templates.TemplateResponse("details.html", {"request": request})
+
+@router.post('/api/details')
+def post_details(request: Request, first_name: str = Form(...), last_name: str = Form(...)):
+    # Here you would save the details to the user profile in the database
+    # For now, just redirect to dashboard
+    print(f"Received details: {first_name} {last_name}")
+    return RedirectResponse(url="/dashboard", status_code=303)
 
 
 

@@ -6,9 +6,11 @@ from fastapi.templating import Jinja2Templates
 import supabase
 from ..services.profile_services import ProfileService
 from ..services.auth_services import AuthService
+from .auth_controller import logged_user
 
 templates = Jinja2Templates(directory="templates")
 router = APIRouter()
+
 
 @router.post('/api/create_profile')
 def create_profile(request: Request,
@@ -53,12 +55,19 @@ def create_profile(request: Request,
 @router.get('/api/profile')
 def get_profile(request:Request):
     try:
-        user_id = request.session.get('user_id')
+        print('GET /api/profile called')
+        user_response = logged_user(request)
+        print('user from logged_user:', user_response)
+        user_id = user_response.user.id if user_response and user_response.user else None
+        print('user_id used for profile lookup:', user_id)
         user_service = ProfileService()
         res = user_service.get_user_profile(user_id)
-        if res:
-            return templates.TemplateResponse("profile.html",{"request":request,"user":res})
+        print('Profile:', res)
+        if res and res.data:
+            return templates.TemplateResponse("profile.html", {"request": request, "user": res.data})
         else:
-            return templates.TemplateResponse("login.html",{"request":request})
+            print('No profile found, rendering registration.html')
+            return templates.TemplateResponse("registration.html", {"request": request, "error": "Please create your profile."})
     except Exception as e:
-        return templates.TemplateResponse("login.html",{"request":request})
+        print('Exception in /api/profile:', e)
+        return templates.TemplateResponse("login.html", {"request": request})
