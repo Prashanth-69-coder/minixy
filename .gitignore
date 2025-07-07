@@ -1,1 +1,47 @@
+# Byte-compiled / optimized / compiled files
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+*.egg-info/
+.eggs/
+
+# Environments
 .env
+venv/
+env/
+# virtualenv
+.venv
+
+# Editor/IDE specific files
+.vscode/
+.idea/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+temp/
+
+# Database files (if not using an external database service)
+*.sqlite3
+*.db
+
+# Uploaded files or user-generated content
+/uploads/
+/static/uploads/
+
+# Build artifacts
+dist/
+build/
+
+# Test-related files
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Pipenv
+Pipfile.lock # Include if you want to explicitly manage dependencies with Pipenv, otherwise ignore
