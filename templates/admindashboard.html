@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Minixy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .sidebar {
+      min-width: 220px;
+      background: rgba(255,255,255,0.85);
+      border-right: 1px solid rgba(102,126,234,0.1);
+      padding: 32px 0 32px 0;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .sidebar .brand-logo {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-weight: 800;
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+    .sidebar .brand-name {
+      font-size: 22px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 32px;
+    }
+    .sidebar-nav {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+    .sidebar-link {
+      width: 80%;
+      padding: 12px 0;
+      border-radius: 12px;
+      text-align: center;
+      color: #4c1d95;
+      font-weight: 600;
+      transition: background 0.2s, color 0.2s;
+      text-decoration: none;
+      font-size: 16px;
+    }
+    .sidebar-link.active, .sidebar-link:hover {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+    }
+    .main-content {
+      margin-left: 240px;
+      padding: 40px 32px 32px 32px;
+    }
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+    .dashboard-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: #4c1d95;
+    }
+    .admin-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 32px;
+      margin-bottom: 40px;
+    }
+    .stat-card {
+      background: rgba(255,255,255,0.9);
+      border-radius: 20px;
+      padding: 32px 24px;
+      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.08);
+      text-align: center;
+      transition: box-shadow 0.2s;
+    }
+    .stat-card:hover {
+      box-shadow: 0 16px 48px rgba(102, 126, 234, 0.15);
+    }
+    .stat-title {
+      font-size: 18px;
+      color: #64748b;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .stat-value {
+      font-size: 32px;
+      font-weight: 800;
+      color: #4c1d95;
+    }
+    .management-section {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 32px 24px;
+      margin-bottom: 32px;
+      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.08);
+    }
+    .management-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #4c1d95;
+      margin-bottom: 18px;
+    }
+    .management-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .management-link {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      border-radius: 14px;
+      padding: 14px 28px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.10);
+    }
+    .management-link:hover {
+      background: #4c1d95;
+      transform: translateY(-2px) scale(1.03);
+    }
+    @media (max-width: 900px) {
+      .sidebar { min-width: 60px; padding: 16px 0; }
+      .sidebar .brand-name { display: none; }
+      .main-content { margin-left: 80px; padding: 24px 8px; }
+      .dashboard-title { font-size: 22px; }
+      .stat-card { padding: 18px 8px; }
+      .management-section { padding: 18px 8px; }
+    }
+    @media (max-width: 600px) {
+      .sidebar { display: none; }
+      .main-content { margin-left: 0; padding: 12px 2vw; }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar glass-effect">
+    <div class="brand-logo">M</div>
+    <div class="brand-name">Minixy</div>
+    <nav class="sidebar-nav">
+      <a href="#" class="sidebar-link active">Dashboard</a>
+      <a href="#" class="sidebar-link">Users</a>
+      <a href="#" class="sidebar-link">Alumni</a>
+      <a href="#" class="sidebar-link">Students</a>
+      <a href="#" class="sidebar-link">Events</a>
+      <a href="#" class="sidebar-link">Settings</a>
+      <a href="#" class="sidebar-link">Logout</a>
+    </nav>
+  </div>
+  <div class="main-content">
+    <div class="dashboard-header">
+      <div class="dashboard-title">Admin Dashboard</div>
+      <div class="admin-avatar">A</div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-title">Total Users</div>
+        <div class="stat-value">2,340</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Active Alumni</div>
+        <div class="stat-value">1,200</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Active Students</div>
+        <div class="stat-value">1,000</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Events Hosted</div>
+        <div class="stat-value">24</div>
+      </div>
+    </div>
+    <div class="management-section">
+      <div class="management-title">Quick Management</div>
+      <div class="management-links">
+        <a href="#" class="management-link">Manage Users</a>
+        <a href="#" class="management-link">Approve Alumni</a>
+        <a href="#" class="management-link">Review Events</a>
+        <a href="#" class="management-link">Platform Settings</a>
+      </div>
+    </div>
+    <div class="management-section">
+      <div class="management-title">Recent Activity</div>
+      <ul style="color:#64748b; font-size:15px;">
+        <li>✔️ New alumni approved: John Doe</li>
+        <li>✔️ Event created: Career Fair 2024</li>
+        <li>✔️ User reported: Jane Smith</li>
+        <li>✔️ Settings updated: Platform Policy</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html> 

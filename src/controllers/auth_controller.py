@@ -63,10 +63,27 @@ def make_signup(request: Request, email: str = Form(...), password: str = Form(.
         res = user_service.signup_user(email, password)
         print('Signup result:', res)
         if res:
-            # Redirect to login with signup success message
-            response = RedirectResponse(url="/login?signup=success", status_code=303)
-            print('Signup successful, redirecting to /login?signup=success')
-            return response
+            # Auto-login after signup
+            login_res = user_service.login_user(email, password)
+            print('Auto-login result:', login_res)
+            # Safely extract access_token
+            session = getattr(login_res, 'session', None) or (login_res.get('session') if isinstance(login_res, dict) else None)
+            access_token = getattr(session, 'access_token', None) if session and not isinstance(session, dict) else (session.get('access_token') if session else None)
+            if access_token:
+                response = RedirectResponse(url="/registration", status_code=303)
+                response.set_cookie(
+                    key="user_session",
+                    value=access_token,
+                    httponly=True,
+                    secure=True,  # only use secure=True if you're serving over HTTPS
+                    samesite='lax',
+                    max_age=3600
+                )
+                print('Signup and auto-login successful, redirecting to /registration')
+                return response
+            else:
+                print('Auto-login failed after signup: No access_token')
+                return templates.TemplateResponse("login.html", {"request": request, "error": "Auto-login failed after signup."})
         else:
             print('Signup failed: No result returned')
             return templates.TemplateResponse("login.html", {"request": request, "error": "Signup failed."})
@@ -105,9 +122,6 @@ def make_login(request: Request, email: str = Form(...), password: str = Form(..
         print('Login exception:', e)
         return templates.TemplateResponse("login.html", {"request": request, "error": "Something went wrong. Try again."})
 
-@router.get('/registration')
-def registration_page(request: Request):
-    return templates.TemplateResponse("registration.html", {"request": request})
 
 @router.get('/dashboard')
 def dashboard_page(request: Request):

@@ -23,13 +23,6 @@ class AuthRepository:
         user = self.supabase.auth.get_user(session_token)
         return user
 
-    def get_user_by_email(self, email):
-        # Query the auth.users table in Supabase to get the user by email
-        response = self.supabase.auth.get_user(email)
-        if response:
-            return response.user.id
-        return None
-
 
 
 

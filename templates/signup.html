@@ -3,69 +3,266 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Minixy - Sign Up</title>
+  <title>Minixy - Join Now</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    /* Base Styles */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
     body {
-      background-color: #f7f7f7;
-      color: #1c1c1e;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       display: flex;
-      justify-content: center;
       align-items: center;
-      padding: 20px;
-      background-image: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-    }
-
-    .auth-container {
-      width: 100%;
-      max-width: 420px;
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 18px;
-      padding: 32px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-      backdrop-filter: blur(20px);
+      justify-content: center;
+      position: relative;
       overflow: hidden;
-      transition: all 0.3s ease;
     }
 
-    .brand {
+    /* Floating Background Shapes */
+    .floating-shapes {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .shape {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .shape:nth-child(1) {
+      width: 80px;
+      height: 80px;
+      top: 20%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+
+    .shape:nth-child(2) {
+      width: 120px;
+      height: 120px;
+      top: 60%;
+      right: 10%;
+      animation-delay: 2s;
+    }
+
+    .shape:nth-child(3) {
+      width: 60px;
+      height: 60px;
+      bottom: 20%;
+      left: 20%;
+      animation-delay: 4s;
+    }
+
+    .shape:nth-child(4) {
+      width: 100px;
+      height: 100px;
+      top: 10%;
+      right: 30%;
+      animation-delay: 1s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    .container {
+      display: flex;
+      width: 950px;
+      max-width: 95vw;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+    }
+
+    .left {
+      flex: 1.2;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .left::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    .brand-logo {
+      width: 80px;
+      height: 80px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #667eea;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 24px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .brand-logo:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    .brand-name {
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .brand-desc {
+      font-size: 18px;
+      font-weight: 400;
+      margin-bottom: 40px;
+      text-align: center;
+      line-height: 1.6;
+      max-width: 350px;
+      opacity: 0.95;
+      position: relative;
+      z-index: 2;
+    }
+
+    .illustration {
+      width: 280px;
+      margin-top: 32px;
+      opacity: 0.9;
+      position: relative;
+      z-index: 2;
+      transition: transform 0.3s ease;
+    }
+
+    .illustration:hover {
+      transform: scale(1.05);
+    }
+
+    .right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 48px;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+    }
+
+    .welcome-text {
       text-align: center;
       margin-bottom: 32px;
     }
 
-    .brand-logo {
-      width: 60px;
-      height: 60px;
-      margin: 0 auto 12px;
-      background-image: linear-gradient(to right, #ff9a9e, #fad0c4);
-      border-radius: 16px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      font-weight: 700;
-      font-size: 24px;
-    }
-
-    .brand-name {
+    .welcome-title {
       font-size: 28px;
       font-weight: 700;
-      color: #1c1c1e;
+      color: #1e293b;
+      margin-bottom: 8px;
       letter-spacing: -0.5px;
+    }
+
+    .welcome-subtitle {
+      font-size: 16px;
+      color: #64748b;
+      font-weight: 400;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 32px;
+      gap: 4px;
+      background: rgba(102, 126, 234, 0.1);
+      padding: 4px;
+      border-radius: 12px;
+    }
+
+    .tab {
+      flex: 1;
+      font-size: 16px;
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      text-align: center;
+      position: relative;
+    }
+
+    .tab.active {
+      background: #667eea;
+      color: white;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .tab:not(.active):hover {
+      background: rgba(102, 126, 234, 0.15);
+      transform: translateY(-1px);
+    }
+
+    .success-message {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 24px;
+      font-weight: 600;
+      font-size: 16px;
+      box-shadow: 0 8px 32px rgba(16, 185, 129, 0.3);
+      animation: slideIn 0.5s ease-out;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .auth-form {
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 24px;
+      margin-bottom: 24px;
     }
 
     .form-group {
@@ -74,163 +271,258 @@
 
     .form-control {
       width: 100%;
-      padding: 16px;
+      padding: 18px 20px;
       font-size: 16px;
-      border-radius: 12px;
-      border: 1px solid #d1d1d6;
-      background-color: #ffffff;
-      transition: all 0.2s ease;
+      border-radius: 16px;
+      border: 2px solid rgba(102, 126, 234, 0.2);
+      background: rgba(248, 250, 252, 0.8);
+      transition: all 0.3s ease;
       outline: none;
+      font-weight: 500;
     }
 
     .form-control:focus {
-      border-color: #a18cd1;
-      box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .form-control::placeholder {
+      color: #94a3b8;
+      font-weight: 400;
     }
 
     .btn {
-      padding: 16px;
-      border-radius: 12px;
+      padding: 18px 24px;
+      border-radius: 16px;
       border: none;
       font-size: 16px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
-      transition: all 0.2s ease;
-      text-align: center;
-      -webkit-appearance: none;
-    }
-
-    .btn-primary {
-      background-image: linear-gradient(to right, #a18cd1, #fbc2eb);
-      color: white;
-      box-shadow: 0 4px 10px rgba(0, 122, 255, 0.2);
-    }
-
-    .btn-primary:hover {
-      background-color: #0062cc;
-    }
-
-    .btn-secondary {
-      background-color: transparent;
-      color: #007aff;
-      border: 1px solid #d1d1d6;
-    }
-
-    .btn-secondary:hover {
-      background-color: rgba(0, 122, 255, 0.05);
-    }
-
-    .tabs {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 24px;
-      border-bottom: 1px solid #e5e5ea;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      transition: all 0.3s ease;
+      margin-top: 8px;
+      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
       position: relative;
+      overflow: hidden;
     }
 
-    .tab {
-      padding: 12px 16px;
-      font-size: 16px;
-      font-weight: 500;
-      color: #a18cd1;
-      cursor: pointer;
-      text-align: center;
-      flex: 1;
-      transition: all 0.2s ease;
-      position: relative;
-      text-decoration: none;
-    }
-
-    .tab.active {
-      color: #007aff;
-      font-weight: 600;
-    }
-
-    .tab.active:after {
+    .btn::before {
       content: '';
       position: absolute;
-      bottom: -1px;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background-color: #007aff;
-      border-radius: 3px 3px 0 0;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn:active {
+      transform: translateY(0);
     }
 
     .footer-links {
       margin-top: 24px;
       text-align: center;
-      font-size: 14px;
-      color: #8e8e93;
+      font-size: 15px;
     }
 
     .footer-links a {
-      color: #007aff;
+      color: #667eea;
       text-decoration: none;
-      margin: 0 8px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
     }
 
     .footer-links a:hover {
-      text-decoration: underline;
+      background: rgba(102, 126, 234, 0.1);
+      transform: translateY(-1px);
     }
 
-    .divider {
-      display: flex;
-      align-items: center;
-      margin: 24px 0;
-      color: #8e8e93;
-      font-size: 14px;
+    .join-now {
+      text-align: center;
+      margin-bottom: 24px;
+      font-size: 15px;
+      color: #64748b;
     }
 
-    .divider::before, .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background-color: #e5e5ea;
+    .join-now a {
+      color: #667eea;
+      font-weight: 700;
+      text-decoration: none;
+      margin-left: 4px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
     }
 
-    .divider::before {
-      margin-right: 16px;
+    .join-now a:hover {
+      background: rgba(102, 126, 234, 0.1);
+      transform: translateY(-1px);
     }
 
-    .divider::after {
-      margin-left: 16px;
+    /* Enhanced Mobile Responsiveness */
+    @media (max-width: 900px) {
+      .container {
+        flex-direction: column;
+        width: 95vw;
+        max-height: 95vh;
+        overflow-y: auto;
+      }
+
+      .left {
+        padding: 40px 24px;
+        min-height: 300px;
+      }
+
+      .right {
+        padding: 40px 24px;
+      }
+
+      .brand-logo {
+        width: 60px;
+        height: 60px;
+        font-size: 28px;
+      }
+
+      .brand-name {
+        font-size: 28px;
+      }
+
+      .brand-desc {
+        font-size: 16px;
+        max-width: 280px;
+      }
+
+      .illustration {
+        width: 200px;
+        margin-top: 20px;
+      }
+
+      .welcome-title {
+        font-size: 24px;
+      }
+
+      .tabs {
+        margin-bottom: 24px;
+      }
+
+      .tab {
+        padding: 10px 16px;
+        font-size: 15px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        width: 98vw;
+        border-radius: 16px;
+      }
+
+      .left, .right {
+        padding: 32px 20px;
+      }
+
+      .form-control {
+        padding: 16px 18px;
+        font-size: 15px;
+      }
+
+      .btn {
+        padding: 16px 20px;
+        font-size: 15px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="auth-container">
-    <div class="brand">
+  <!-- Floating Background Shapes -->
+  <div class="floating-shapes">
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+  </div>
+
+  <div class="container">
+    <div class="left">
       <div class="brand-logo">M</div>
-      <h1 class="brand-name">Minixy</h1>
-    </div>
-
-    {% if success %}
-    <div style="background: linear-gradient(to right, #a18cd1, #fbc2eb); color: white; border-radius: 10px; padding: 14px; text-align: center; margin-bottom: 18px; font-weight: 600; font-size: 18px;">
-      Signup successfully!
-    </div>
-    {% endif %}
-
-    <div class="tabs">
-      <a href="/login" class="tab">Login</a>
-      <div class="tab active">Sign Up</div>
-    </div>
-
-    <form class="auth-form" action="/api/signup" method="post">
-      <div class="form-group">
-        <input name="email" type="email" class="form-control" placeholder="Email" required />
+      <div class="brand-name">Minixy</div>
+      <div class="brand-desc">Join thousands of students and alumni building meaningful professional connections. Your career journey starts here.</div>
+      <div class="illustration">
+        <svg width="280" height="200" viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="140" cy="100" r="80" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+          <circle cx="140" cy="100" r="60" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+          <circle cx="140" cy="100" r="40" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+          <text x="140" y="110" text-anchor="middle" fill="white" font-size="32" font-weight="600">🚀</text>
+          <text x="140" y="140" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-size="14" font-weight="500">Start Your Journey</text>
+        </svg>
       </div>
-      <div class="form-group">
-        <input name="password" type="password" class="form-control" placeholder="Password" required />
+    </div>
+
+    <div class="right">
+      <div class="welcome-text">
+        <h1 class="welcome-title">Join Minixy</h1>
+        <p class="welcome-subtitle">Create your account and start connecting</p>
       </div>
-      <button type="submit" class="btn btn-primary">Create Account</button>
-      <div class="divider">or</div>
-      <button type="button" class="btn btn-secondary">Continue with Google</button>
+
+      {% if success %}
+      <div class="success-message">
+        🎉 Account created successfully! Please sign in to continue.
+      </div>
+      {% endif %}
+
+      <div class="tabs">
+        <a href="/login" class="tab">Sign in</a>
+        <div class="tab active">Join now</div>
+      </div>
+
+      <form class="auth-form" action="/api/signup" method="post">
+        <div class="form-group">
+          <input name="full_name" type="text" class="form-control" placeholder="Full Name" required />
+        </div>
+        <div class="form-group">
+          <input name="email" type="email" class="form-control" placeholder="Email Address" required />
+        </div>
+        <div class="form-group">
+          <input name="password" type="password" class="form-control" placeholder="Create Password" required minlength="8" />
+        </div>
+        <div class="form-group">
+          <select name="user_type" class="form-control" required>
+            <option value="">I am a...</option>
+            <option value="student">Current Student</option>
+            <option value="alumni">Alumni</option>
+            <option value="mentor">Mentor</option>
+          </select>
+        </div>
+        <button type="submit" class="btn">Create Your Account</button>
+      </form>
+
       <div class="footer-links">
         <a href="#">Terms of Service</a>
+        <span style="color: #cbd5e1; margin: 0 8px;">•</span>
         <a href="#">Privacy Policy</a>
       </div>
-    </form>
+
+      <div class="join-now">
+        Already have an account?
+        <a href="/login">Sign in</a>
+      </div>
+    </div>
   </div>
 </body>
 </html>

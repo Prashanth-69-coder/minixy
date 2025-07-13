@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minixy - Alumni Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            border-right: 1px solid #e2e8f0;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 280px;
+            z-index: 50;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+
+        .brand-logo {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: 800;
+            font-size: 20px;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .brand-logo:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            margin: 4px 16px;
+            border-radius: 16px;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: #334155;
+            transform: translateX(4px);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-item svg {
+            width: 22px;
+            height: 22px;
+            margin-right: 14px;
+        }
+
+        .post-card {
+            background: white;
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .post-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .post-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .post-card:hover {
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            transform: translateY(-4px);
+            border-color: rgba(102, 126, 234, 0.2);
+        }
+
+        .avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 14px 28px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 16px;
+            padding: 12px 24px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(102, 126, 234, 0.15);
+            border-color: rgba(102, 126, 234, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2);
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .stats-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stats-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            border-color: rgba(102, 126, 234, 0.2);
+        }
+
+        .notification-badge {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .trending-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        .newest-tag {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+        }
+
+        .content-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .content-card:hover {
+            border-color: rgba(102, 126, 234, 0.3);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            transform: translateY(-2px);
+        }
+
+        .floating-action {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .floating-action:hover {
+            transform: scale(1.1) translateY(-4px);
+            box-shadow: 0 16px 50px rgba(102, 126, 234, 0.5);
+        }
+
+        .header-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-bottom: 1px solid #e2e8f0;
+            backdrop-filter: blur(20px);
+        }
+
+        .engagement-stats {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding-top: 16px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .engagement-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 12px;
+        }
+
+        .engagement-item:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .profile-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 24px;
+            border-radius: 20px;
+            margin: 16px;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .quick-action-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .quick-action-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        .create-post-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 2px dashed rgba(102, 126, 234, 0.3);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .create-post-card:hover {
+            border-color: rgba(102, 126, 234, 0.5);
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            transform: translateY(-2px);
+        }
+
+        .post-type-selector {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .post-type-btn {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .post-type-btn:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center space-x-3">
+                <div class="brand-logo">M</div>
+                <div>
+                    <h1 class="text-xl font-bold text-gray-900">Minixy</h1>
+                    <p class="text-sm text-gray-500">Alumni Network</p>
+                </div>
+            </div>
+        </div>
+
+        <nav class="py-6">
+            <a href="#" class="nav-item active">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                </svg>
+                Feed
+            </a>
+
+            <a href="#" class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                </svg>
+                Mentorship Hub
+                <span class="notification-badge ml-auto">5</span>
+            </a>
+
+            <a href="#" class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2h8z"/>
+                </svg>
+                Job Referrals
+                <span class="notification-badge ml-auto">8</span>
+            </a>
+
+            <a href="#" class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                </svg>
+                Discussions
+            </a>
+
+            <a href="#" class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                AMA Sessions
+                <span class="notification-badge ml-auto">2</span>
+            </a>
+
+            <a href="#" class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                Analytics
+            </a>
+
+            <a href="#" class="nav-item">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                Profile
+            </a>
+        </nav>
+
+        <div class="profile-section">
+            <div class="flex items-center space-x-3 mb-4">
+                <div class="avatar text-lg bg-white text-purple-600">JD</div>
+                <div>
+                    <div class="font-bold text-lg">John Doe</div>
+                    <div class="text-sm opacity-90">Senior Engineer @ Google</div>
+                    <div class="text-xs opacity-75">Stanford '18</div>
+                </div>
+            </div>
+            <div class="quick-actions">
+                <button class="quick-action-btn">Edit Profile</button>
+                <button class="quick-action-btn">Settings</button>
+                <button class="quick-action-btn">Help Center</button>
+                <button class="quick-action-btn">Sign Out</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header-gradient sticky top-0 z-40">
+            <div class="px-8 py-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-6">
+                        <h1 class="text-3xl font-bold text-gray-900">Alumni Feed</h1>
+                        <div class="flex space-x-3">
+                            <span class="newest-tag">NEWEST</span>
+                            <span class="trending-tag">TRENDING</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4">
+                        <button class="btn-secondary">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            Search Alumni
+                        </button>
+                        <button class="btn-primary">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Share Knowledge
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex">
+            <!-- Feed Content -->
+            <div class="flex-1 p-8 max-w-3xl">
+                <!-- Create Post Card -->
+                <div class="create-post-card">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="avatar text-lg">JD</div>
+                        <input type="text" placeholder="Share your expertise with students and fellow alumni..." class="flex-1 bg-transparent border-none outline-none text-lg placeholder-gray-500">
+                    </div>
+                    <div class="post-type-selector">
+                        <button class="post-type-btn">
+                            <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            Article
+                        </button>
+                        <button class="post-type-btn">
+                            <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2h8z"/>
+                            </svg>
+                            Job Post
+                        </button>
+                        <button class="post-type-btn">
+                            <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            AMA
+                        </button>
+                        <button class="post-type-btn">
+                            <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                            </svg>
+                            Mentorship
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Knowledge Sharing Post -->
+                <div class="post-card">
+                    <div class="flex items-start space-x-4 mb-6">
+                        <div class="avatar text-lg">SM</div>
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <h3 class="font-bold text-lg text-gray-900">Sarah Mitchell</h3>
+                                <span class="text-sm text-gray-500">@sarahmitchell</span>
+                                <span class="text-sm text-gray-500">•</span>
+                                <span class="text-sm text-gray-500">2h</span>
+                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-bold">VERIFIED ALUMNI</span>
+                            </div>
+                            <p class="text-gray-600 font-medium">Senior Product Manager at Google • Stanford '19</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <span class="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold">KNOWLEDGE SHARE</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">The Complete Guide to Breaking into Product Management</h2>
+                        <p class="text-gray-700 mb-4 text-lg leading-relaxed">Just published my comprehensive guide on transitioning into product management. This covers everything from building the right skillset to acing PM interviews at top tech companies. Hope this helps students looking to break into tech!</p>
+
+                        <div class="content-card">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center">
+                                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-lg text-gray-900">Product Management Career Guide</h4>
+                                    <p class="text-gray-600 mb-2">A comprehensive step-by-step guide covering skills, interview prep, and career progression in product management.</p>
+                                    <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                        <span>📖 15 min read</span>
+                                        <span>💼 Career Guide</span>
+                                        <span>🎯 Beginner Friendly</span>
+                                    </div>
+                                </div>
+                                <button class="btn-primary">Read Article</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="engagement-stats">
+                        <div class="engagement-item">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                            </svg>
+                            <span class="font-semibold">156</span>
+                        </div>
+                        <div class="engagement-item">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                            </svg>
+                            <span class="font-semibold">42</span>
+                        </div>
+                        <div class="engagement-item">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
+                            </svg>
+                            <span class="font-semibold">Share</span>
+                        </div>
+                        <div class="engagement-item ml-auto">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                            </svg>
+                            <span class="font-semibold">Save</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job Referral Post -->
+                <div class="post-card">
+                    <div class="flex items-start space-x-4 mb-6">
+                        <div class="avatar text-lg bg-green-500">MJ</div>
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <h3 class="font-bold text-lg text-gray-900">Michael Johnson</h3>
+                                <span class="text-sm text-gray-500">@michaelj</span>
+                                <span class="text-sm text-gray-500">•</span>
+                                <span class="text-sm text-gray-500">4h</span>
+                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-bold">HIRING MANAGER</span>
+                            </div>
+                            <p class="text-gray-600 font-medium">Engineering Manager at Microsoft • MIT '17</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <span class="bg-gradient-to-r from-green-500 to-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold">JOB REFERRAL</span>
+                            <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-bold">URGENT</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">Software Engineer Positions Open at Microsoft</h2>
+                        <p class="text-gray-700 mb-4 text-lg leading-relaxed">We're actively hiring multiple software engineers across different teams at Microsoft. Looking for both new grads and experienced developers. I'm happy to provide referrals for qualified candidates from our alumni network!</p>
+
+                        <div class="content-card border-2 border-green-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-green-500 rounded-xl flex items-center justify-center">
+                                            <span class="text-white font-bold text-lg">M</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-xl text-gray-900">Software Engineer - Multiple Levels</h4>
+                                            <p class="text-gray-600">Microsoft • Seattle, WA • Full-time</p>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <p class="text-sm text-gray-500">Salary Range</p>
+                                            <p class="font-bold text-green-600">$120k - $200k</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-500">Experience</p>
+                                            <p class="font-bold text-gray-900">0-5 years</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-500">Remote</p>
+                                            <p class="font-bold text-blue-600">Hybrid Available</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-500">Applications</p>
+                                            <p class="font-bold text-orange-600">23 submitted</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ml-6">
+                                    <button class="btn-primary text-lg px-8 py-4">Apply for Referral</button>
+                                    <p class="text-xs text-gray-500 mt-2 text-center">Fast-track process</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="engagement-stats">
+                        <div class="engagement-item">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                            </svg>
+                            <span class="font-semibold">89</span>
+                        </div>
+                        <div class="engagement-item">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                            </svg>
+                            <span class="font-semibold">31</span>
+                        </div>
+                        <div class="engagement-item">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
+                            </svg>
+                            <span class="font-semibold">Share</span>
+                        </div>
+                        <div class="engagement-item ml-auto">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                            </svg>
+                            <span class="font-semibold">Save</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AMA Session Post -->
+                <div class="post-card">
+                    <div class="flex items-start space-x-4 mb-6">
+                        <div class="avatar text-lg bg-purple-500">LW</div>
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3 mb-2">
+                                <h3 class="font-bold text-lg text-gray-900">Lisa Wang</h3>
+                                <span class="text-sm text-gray-500">@lisawang</span>
+                                <span class="text-sm text-gray-500">•</span>
+                                <span class="text-sm text-gray-500">6h</span>
+                                <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-bold">VP ENGINEERING</span>
+                            </div>
+                            <p class="text-gray-600 font-medium">VP of Engineering at Stripe • Berkeley '15</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <span class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-full text-xs font-bold">AMA SESSION</span>
+                            <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-bold">LIVE FRIDAY</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">Ask Me Anything: Building Engineering Teams at Scale</h2>
+                        <p class="text-gray-700 mb-4 text-lg leading-relaxed">Join me this Friday for an exclusive AMA session about building and scaling engineering teams. I'll share insights from my journey at Stripe and answer your questions about engineering leadership, team culture, and career growth.</p>
+
+                        <div class="content-card border-2 border-purple-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-3 mb-4">
+                                        <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center">
+                                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-xl text-gray-900">Engineering Leadership AMA</h4>
+                                            <p class="text-gray-600">Live Q&A session with industry expert</p>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-4">
+                                        <div>
+                                            <p class="text-sm text-gray-500">Date & Time</p>
+                                            <p class="font-bold text-purple-600">Friday, 3:00 PM PST</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-500">Duration</p>
+                                            <p class="font-bold text-gray-900">60 minutes</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-500">Registered</p>
+                                            <p class="font-bold text-green-600">127 students</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ml-6">
+                                    <button class="btn-primary text-lg px-8 py-4">Join AMA</button>
+                                    <p class="text-xs text-gray-500 mt-2 text-center">Free for alumni network</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="engagement-stats">
+                        <div class="engagement-item">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                            </svg>
+                            <span class="font-semibold">234</span>
+                        </div>
+                        <div class="engagement-item">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                            </svg>
+                            <span class="font-semibold">67</span>
+                        </div>
+                        <div class="engagement-item">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
+                            </svg>
+                            <span class="font-semibold">Share</span>
+                        </div>
+                        <div class="engagement-item ml-auto">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                            </svg>
+                            <span class="font-semibold">Save</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="w-96 p-8">
+                <!-- Impact Overview -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">Your Impact</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="stats-card">
+                            <div class="text-3xl font-bold text-purple-600 mb-2">24</div>
+                            <div class="text-sm text-gray-600 font-medium">Students Mentored</div>
+                            <div class="text-xs text-green-600 mt-1">+3 this month</div>
+                        </div>
+                        <div class="stats-card">
+                            <div class="text-3xl font-bold text-green-600 mb-2">18</div>
+                            <div class="text-sm text-gray-600 font-medium">Job Referrals</div>
+                            <div class="text-xs text-green-600 mt-1">+5 this month</div>
+                        </div>
+                        <div class="stats-card">
+                            <div class="text-3xl font-bold text-blue-600 mb-2">342</div>
+                            <div class="text-sm text-gray-600 font-medium">Knowledge Shares</div>
+                            <div class="text-xs text-green-600 mt-1">+12 this week</div>
+                        </div>
+                        <div class="stats-card">
+                            <div class="text-3xl font-bold text-orange-600 mb-2">7</div>
+                            <div class="text-sm text-gray-600 font-medium">AMA Sessions</div>
+                            <div class="text-xs text-green-600 mt-1">+1 scheduled</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Requests -->
+                <div class="bg-white rounded-20 p-6 border border-gray-200 mb-8 shadow-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-gray-900">Pending Requests</h3>
+                        <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-bold">5 NEW</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                            <div class="flex items-center space-x-3">
+                                <div class="avatar text-sm bg-blue-500">AS</div>
+                                <div>
+                                    <div class="font-semibold text-gray-900">Alex Smith</div>
+                                    <div class="text-sm text-gray-500">Mentorship request</div>
+                                    <div class="text-xs text-gray-400">Computer Science • Stanford</div>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="w-8 h-8 bg-green-500 text-white rounded-lg flex items-center justify-center hover:bg-green-600 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                </button>
+                                <button class="w-8 h-8 bg-red-500 text-white rounded-lg flex items-center justify-center hover:bg-red-600 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                            <div class="flex items-center space-x-3">
+                                <div class="avatar text-sm bg-green-500">JD</div>
+                                <div>
+                                    <div class="font-semibold text-gray-900">Jane Doe</div>
+                                    <div class="text-sm text-gray-500">Job referral request</div>
+                                    <div class="text-xs text-gray-400">Software Engineer • Google</div>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="w-8 h-8 bg-green-500 text-white rounded-lg flex items-center justify-center hover:bg-green-600 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                </button>
+                                <button class="w-8 h-8 bg-red-500 text-white rounded-lg flex items-center justify-center hover:bg-red-600 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                            <div class="flex items-center space-x-3">
+                                <div class="avatar text-sm bg-purple-500">MK</div>
+                                <div>
+                                    <div class="font-semibold text-gray-900">Mike Kim</div>
+                                    <div class="text-sm text-gray-500">AMA question</div>
+                                    <div class="text-xs text-gray-400">Product Management</div>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="w-8 h-8 bg-blue-500 text-white rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="w-full mt-4 btn-secondary">View All Requests</button>
+                </div>
+
+                <!-- Trending Topics -->
+                <div class="bg-white rounded-20 p-6 border border-gray-200 shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">Trending in Alumni Network</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
+                            <div>
+                                <span class="font-semibold text-gray-700">#TechnicalInterviews</span>
+                                <p class="text-sm text-gray-500">Career preparation discussions</p>
+                            </div>
+                            <span class="text-sm font-bold text-purple-600">234 posts</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
+                            <div>
+                                <span class="font-semibold text-gray-700">#RemoteWork</span>
+                                <p class="text-sm text-gray-500">Work from home insights</p>
+                            </div>
+                            <span class="text-sm font-bold text-blue-600">189 posts</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
+                            <div>
+                                <span class="font-semibold text-gray-700">#StartupLife</span>
+                                <p class="text-sm text-gray-500">Entrepreneurship journey</p>
+                            </div>
+                            <span class="text-sm font-bold text-green-600">156 posts</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
+                            <div>
+                                <span class="font-semibold text-gray-700">#CareerGrowth</span>
+                                <p class="text-sm text-gray-500">Professional development</p>
+                            </div>
+                            <span class="text-sm font-bold text-orange-600">142 posts</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors cursor-pointer">
+                            <div>
+                                <span class="font-semibold text-gray-700">#WomenInTech</span>
+                                <p class="text-sm text-gray-500">Diversity and inclusion</p>
+                            </div>
+                            <span class="text-sm font-bold text-pink-600">98 posts</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="floating-action">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+    </div>
+</body>
+</html>

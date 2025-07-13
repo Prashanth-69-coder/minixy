@@ -3,377 +3,535 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Registration</title>
+    <title>Minixy - Complete Registration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
-            background-color: #f7f7f7;
-            color: #1c1c1e;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            padding: 20px;
-            background-image: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
         }
 
-        .form-container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        /* Floating Background Shapes */
+        .floating-shapes {
+            position: absolute;
             width: 100%;
-            max-width: 600px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
         }
 
-        .form-title {
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .shape:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        .shape:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            right: 30%;
+            animation-delay: 1s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .container {
+            display: flex;
+            width: 950px;
+            max-width: 95vw;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        .left {
+            flex: 1.2;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .left::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .brand-logo {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #667eea;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand-logo:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 16px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .brand-name {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand-desc {
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 40px;
             text-align: center;
-            margin-bottom: 30px;
-            color: #1c1c1e;
-            font-size: 2rem;
+            line-height: 1.6;
+            max-width: 350px;
+            opacity: 0.95;
+            position: relative;
+            z-index: 2;
+        }
+
+        .illustration {
+            width: 280px;
+            margin-top: 32px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+            transition: transform 0.3s ease;
+        }
+
+        .illustration:hover {
+            transform: scale(1.05);
+        }
+
+        .right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px 48px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+        }
+
+        .welcome-text {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .welcome-title {
+            font-size: 28px;
             font-weight: 700;
-            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #1e293b;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .welcome-subtitle {
+            font-size: 16px;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 32px;
+            gap: 4px;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 4px;
+            border-radius: 12px;
+        }
+
+        .tab {
+            flex: 1;
+            font-size: 14px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 16px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+        }
+
+        .tab.active {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .tab:not(.active):hover {
+            background: rgba(102, 126, 234, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 24px;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .registration-form {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-bottom: 24px;
         }
 
         .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-row {
-            display: flex;
-            gap: 15px;
-        }
-
-        .form-row .form-group {
-            flex: 1;
+            position: relative;
         }
 
         label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: #2c2c2e;
-            font-size: 14px;
+            color: #374151;
+            font-size: 15px;
+            letter-spacing: -0.2px;
         }
 
         .required {
-            color: #ff3b30;
+            color: #ef4444;
+            margin-left: 2px;
         }
 
         input[type="text"],
-        input[type="email"],
-        select,
-        textarea {
+        select {
             width: 100%;
-            padding: 15px;
-            border: 2px solid rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
+            padding: 18px 20px;
             font-size: 16px;
+            border-radius: 16px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            background: rgba(248, 250, 252, 0.8);
             transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.8);
-            color: #1c1c1e;
+            outline: none;
+            font-weight: 500;
+            color: #1f2937;
         }
 
         input[type="text"]:focus,
-        input[type="email"]:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #ff6b6b;
-            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
-            background: rgba(255, 255, 255, 1);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .skills-container {
-            border: 2px solid rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.8);
-            transition: all 0.3s ease;
-        }
-
-        .skills-container:focus-within {
-            border-color: #ff6b6b;
-            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
-            background: rgba(255, 255, 255, 1);
-        }
-
-        .skills-input-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .skills-input {
-            flex: 1;
-            border: 1px solid rgba(0, 0, 0, 0.2);
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-
-        .add-skill-btn {
-            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: transform 0.2s ease;
-        }
-
-        .add-skill-btn:hover {
+        select:focus {
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
             transform: translateY(-2px);
         }
 
-        .skills-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+        input[type="text"]::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
         }
 
-        .skill-tag {
-            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-            color: #1c1c1e;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 500;
-        }
-
-        .remove-skill {
-            background: none;
-            border: none;
-            color: #1c1c1e;
+        select {
             cursor: pointer;
-            font-weight: bold;
-            padding: 0;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .file-input-wrapper {
-            position: relative;
-            display: inline-block;
-            width: 100%;
-        }
-
-        .file-input {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-
-        .file-input-display {
-            width: 100%;
-            padding: 15px;
-            border: 2px dashed rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.5);
-        }
-
-        .file-input-display:hover {
-            border-color: #ff6b6b;
-            background: rgba(255, 255, 255, 0.8);
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 16px center;
+            background-repeat: no-repeat;
+            background-size: 16px;
+            padding-right: 48px;
         }
 
         .submit-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
-            color: white;
+            padding: 18px 24px;
+            border-radius: 16px;
             border: none;
-            padding: 18px;
-            border-radius: 12px;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             cursor: pointer;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
             transition: all 0.3s ease;
-            margin-top: 20px;
+            margin-top: 8px;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
         }
 
         .submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
         }
 
         .submit-btn:active {
             transform: translateY(0);
         }
 
-        @media (max-width: 768px) {
-            .form-container {
-                padding: 30px 20px;
-            }
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 24px;
+            gap: 8px;
+        }
 
-            .form-row {
+        .progress-step {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(102, 126, 234, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .progress-step.active {
+            background: #667eea;
+            transform: scale(1.2);
+        }
+
+        .progress-step.completed {
+            background: #10b981;
+        }
+
+        /* Enhanced Mobile Responsiveness */
+        @media (max-width: 900px) {
+            .container {
                 flex-direction: column;
-                gap: 0;
+                width: 95vw;
+                max-height: 95vh;
+                overflow-y: auto;
             }
 
-            .form-title {
-                font-size: 1.5rem;
+            .left {
+                padding: 40px 24px;
+                min-height: 300px;
+            }
+
+            .right {
+                padding: 40px 24px;
+            }
+
+            .brand-logo {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+            }
+
+            .brand-name {
+                font-size: 28px;
+            }
+
+            .brand-desc {
+                font-size: 16px;
+                max-width: 280px;
+            }
+
+            .illustration {
+                width: 200px;
+                margin-top: 20px;
+            }
+
+            .welcome-title {
+                font-size: 24px;
+            }
+
+            .tabs {
+                margin-bottom: 24px;
+            }
+
+            .tab {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                width: 98vw;
+                border-radius: 16px;
+            }
+
+            .left, .right {
+                padding: 32px 20px;
+            }
+
+            input[type="text"], select {
+                padding: 16px 18px;
+                font-size: 15px;
+            }
+
+            .submit-btn {
+                padding: 16px 20px;
+                font-size: 15px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="form-container">
-        <h1 class="form-title">Create Your Profile</h1>
-
-        <form id="registrationForm" name="createProfileForm" action="/api/create_profile" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="email" value="{{ request.query_params.get('email', '') }}">
-            <div class="form-group">
-                <label for="userName">Username <span class="required">*</span></label>
-                <input type="text" id="userName" name="user_name" required>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="firstName">First Name</label>
-                    <input type="text" id="firstName" name="first_name">
-                </div>
-                <div class="form-group">
-                    <label for="lastName">Last Name</label>
-                    <input type="text" id="lastName" name="last_name">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="role">Role <span class="required">*</span></label>
-                <select id="role" name="role" required>
-                    <option value="">Select your role</option>
-                    <option value="student">Student</option>
-                    <option value="alumni">Alumni</option>
-                    <option value="admin">Admin</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="bio">Bio</label>
-                <textarea id="bio" name="bio" placeholder="Tell us about yourself..."></textarea>
-            </div>
-
-            <div class="form-group">
-                <label>Skills</label>
-                <div class="skills-container">
-                    <div class="skills-input-container">
-                        <input type="text" class="skills-input" id="skillInput" placeholder="Enter a skill">
-                        <button type="button" class="add-skill-btn" onclick="addSkill()">Add</button>
-                    </div>
-                    <div class="skills-list" id="skillsList"></div>
-                    <input type="hidden" name="skills" id="skillsHiddenInput">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="experience">Experience</label>
-                <textarea id="experience" name="experience" placeholder="Describe your work experience, projects, or achievements..."></textarea>
-            </div>
-
-            <!--
-            <div class="form-group">
-                <label>Profile Picture</label>
-                <div class="file-input-wrapper">
-                    <input type="file" class="file-input" id="profilePicture" name="profile_picture" accept="image/*">
-                    <div class="file-input-display" onclick="document.getElementById('profilePicture').click()">
-                        <span id="fileDisplayText">Click to upload profile picture</span>
-                    </div>
-                </div>
-            </div>
-            -->
-            <!-- TODO: Image upload will be implemented later -->
-
-            <button type="submit" class="submit-btn">Create Profile</button>
-        </form>
+    <!-- Floating Background Shapes -->
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
     </div>
 
-    <script>
-        let skills = [];
+    <div class="container">
+        <div class="left">
+            <div class="brand-logo">M</div>
+            <div class="brand-name">Minixy</div>
+            <div class="brand-desc">Complete your profile to unlock the full potential of our alumni network. Connect, grow, and succeed together.</div>
+            <div class="illustration">
+                <svg width="280" height="200" viewBox="0 0 280 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="140" cy="100" r="80" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+                    <circle cx="140" cy="100" r="60" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                    <circle cx="140" cy="100" r="40" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                    <text x="140" y="110" text-anchor="middle" fill="white" font-size="32" font-weight="600">📝</text>
+                    <text x="140" y="140" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-size="14" font-weight="500">Complete Profile</text>
+                </svg>
+            </div>
+        </div>
 
-        function addSkill() {
-            const skillInput = document.getElementById('skillInput');
-            const skill = skillInput.value.trim();
+        <div class="right">
+            <div class="welcome-text">
+                <h1 class="welcome-title">Complete Your Registration</h1>
+                <p class="welcome-subtitle">Just a few more details to get you started</p>
+            </div>
 
-            if (skill && !skills.includes(skill)) {
-                skills.push(skill);
-                renderSkills();
-                skillInput.value = '';
-            }
-            updateSkillsHiddenInput();
-        }
+            <div class="progress-indicator">
+                <div class="progress-step completed"></div>
+                <div class="progress-step completed"></div>
+                <div class="progress-step active"></div>
+            </div>
 
-        function removeSkill(skillToRemove) {
-            skills = skills.filter(skill => skill !== skillToRemove);
-            renderSkills();
-            updateSkillsHiddenInput();
-        }
+            <div class="tabs">
+                <a href="/login" class="tab">Sign in</a>
+                <a href="/signup" class="tab">Join now</a>
+                <div class="tab active">Complete</div>
+            </div>
 
-        function renderSkills() {
-            const skillsList = document.getElementById('skillsList');
-            skillsList.innerHTML = '';
+            {% if error %}
+            <div class="error-message">
+                ⚠️ {{ error }}
+            </div>
+            {% endif %}
 
-            skills.forEach(skill => {
-                const skillTag = document.createElement('div');
-                skillTag.className = 'skill-tag';
-                skillTag.innerHTML = `
-                    ${skill}
-                    <button type="button" class="remove-skill" onclick="removeSkill('${skill}')">×</button>
-                `;
-                skillsList.appendChild(skillTag);
-            });
-        }
+            <form id="registrationForm" name="createProfileForm" action="/api/create/profile" method="post" class="registration-form">
+                <div class="form-group">
+                    <label for="first_name">First Name <span class="required">*</span></label>
+                    <input type="text" id="first_name" name="first_name" required value="" placeholder="Enter your first name">
+                </div>
 
-        function updateSkillsHiddenInput() {
-            document.getElementById('skillsHiddenInput').value = skills.join(',');
-        }
+                <div class="form-group">
+                    <label for="last_name">Last Name <span class="required">*</span></label>
+                    <input type="text" id="last_name" name="last_name" required value="" placeholder="Enter your last name">
+                </div>
 
-        // Handle Enter key in skills input
-        document.getElementById('skillInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                addSkill();
-            }
-        });
+                <div class="form-group">
+                    <label for="role">Role <span class="required">*</span></label>
+                    <select id="role" name="role" required>
+                        <option value="">Select your role</option>
+                        <option value="student">Current Student</option>
+                        <option value="alumni">Alumni</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
 
-        // Handle file input display
-        document.getElementById('profilePicture').addEventListener('change', function(e) {
-            const fileDisplayText = document.getElementById('fileDisplayText');
-            if (e.target.files.length > 0) {
-                fileDisplayText.textContent = e.target.files[0].name;
-            } else {
-                fileDisplayText.textContent = 'Click to upload profile picture';
-            }
-        });
-    </script>
+                <button type="submit" class="submit-btn">Complete Registration</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
