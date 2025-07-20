@@ -14,6 +14,13 @@ class ProfileRepository:
         result = self.supabase.table('profiles').select('*').eq('id',user_id).execute()
         return result.data
 
+    def get_role(self,user_id):
+        result = self.supabase.table('profiles').select('role').eq('id',user_id).execute()
+        return result.data
+
+
+
+
 
 
 

@@ -96,27 +96,59 @@ def make_signup(request: Request, email: str = Form(...), password: str = Form(.
 @router.post('/api/login')
 def make_login(request: Request, email: str = Form(...), password: str = Form(...)):
     try:
-        print('Login attempt: email=', email, 'password=', password)
         user_service = AuthService()
         res = user_service.login_user(email, password)
-        print('Login result:', res)
-        if res and res.session and res.session.access_token:
-            response = RedirectResponse(
-                url="/dashboard",
-                status_code=status.HTTP_303_SEE_OTHER
-            )
-            response.set_cookie(
-                key="user_session",
-                value=res.session.access_token,
-                httponly=True,
-                secure=True,  # only use secure=True if you're serving over HTTPS
-                samesite='lax',
-                max_age=3600
-            )
-            print('Login successful, redirecting to /dashboard')
-            return response
+
+        if res and res.session and res.session.access_token and res.user and res.user.id:
+            user_id = res.user.id
+            role_service = ProfileService()
+            role = role_service.get_role(user_id)
+            user_role = None
+            if role and isinstance(role, list) and len(role) > 0 and 'role' in role[0]:
+                user_role = role[0]['role']
+            if user_role == 'admin':
+                response = RedirectResponse(
+                    url="/admindashboard",
+                    status_code=status.HTTP_303_SEE_OTHER
+                )
+                response.set_cookie(
+                    key="user_session",
+                    value=res.session.access_token,
+                    httponly=True,
+                    secure=True,  # only use secure=True if you're serving over HTTPS
+                    samesite='lax',
+                    max_age=3600
+                )
+                return response
+            elif user_role == 'student':
+                response = RedirectResponse(
+                    url="/studentdashboard",
+                    status_code=status.HTTP_303_SEE_OTHER
+                )
+                response.set_cookie(
+                    key="user_session",
+                    value=res.session.access_token,
+                    httponly=True,
+                    secure=True,  # only use secure=True if you're serving over HTTPS
+                    samesite='lax',
+                    max_age=3600
+                )
+                return response
+            elif user_role == 'alumni':
+                response = RedirectResponse(
+                    url="/alumnidashboard",
+                    status_code=status.HTTP_303_SEE_OTHER
+                )
+                response.set_cookie(
+                    key="user_session",
+                    value=res.session.access_token,
+                    httponly=True,
+                    secure=True,  # only use secure=True if you're serving over HTTPS
+                    samesite='lax',
+                    max_age=3600
+                )
+                return response
         else:
-            print('Login failed: Invalid credentials')
             return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid credentials"})
     except Exception as e:
         print('Login exception:', e)
@@ -124,8 +156,36 @@ def make_login(request: Request, email: str = Form(...), password: str = Form(..
 
 
 @router.get('/dashboard')
-def dashboard_page(request: Request):
-    return templates.TemplateResponse("dashboard.html", {"request": request})
+def dashboard_redirect(request: Request):
+    user = logged_user(request)
+    if not user:
+        return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
+    role_service = ProfileService()
+    role = role_service.get_role(user.user.id)
+    user_role = None
+    if role and isinstance(role, list) and len(role) > 0 and 'role' in role[0]:
+        user_role = role[0]['role']
+    if user_role == 'admin':
+        return RedirectResponse(url="/admindashboard", status_code=status.HTTP_303_SEE_OTHER)
+    elif user_role == 'student':
+        return RedirectResponse(url="/studentdashboard", status_code=status.HTTP_303_SEE_OTHER)
+    elif user_role == 'alumni':
+        return RedirectResponse(url="/alumnidashboard", status_code=status.HTTP_303_SEE_OTHER)
+    else:
+        # Default fallback if role is missing or unknown
+        return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
+
+@router.get('/studentdashboard')
+def student_dashboard(request: Request):
+    return templates.TemplateResponse("studentdashboard.html", {"request": request})
+
+@router.get('/alumnidashboard')
+def alumni_dashboard(request: Request):
+    return templates.TemplateResponse("alumnidashboard.html", {"request": request})
+
+@router.get('/admindashboard')
+def admin_dashboard(request: Request):
+    return templates.TemplateResponse("admindashboard.html", {"request": request})
 
 @router.get('/details')
 def get_details(request: Request):

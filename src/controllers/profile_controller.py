@@ -1,4 +1,3 @@
-import profile
 from typing import Self
 from fastapi import FastAPI,APIRouter,Form,Request
 from fastapi.responses import HTMLResponse,RedirectResponse
@@ -30,6 +29,8 @@ def registration_page(request: Request):
     else:
         return RedirectResponse('/login')
 
+# Removed the /dashboard route to avoid conflict with auth_controller.py
+
 @router.post('/api/create/profile')
 def update_profile(request: Request, first_name: str = Form(...), last_name: str = Form(...), role: str = Form(...)):
     profile_service = ProfileService()
@@ -43,6 +44,16 @@ def update_profile(request: Request, first_name: str = Form(...), last_name: str
         }
         result = profile_service.create_user_profile(profile)
         if result:
-            return RedirectResponse(url="/dashboard", status_code=status.HTTP_303_SEE_OTHER)
+            # After profile creation, redirect to the correct dashboard based on role
+            if role == 'admin':
+                return RedirectResponse(url="/admindashboard", status_code=status.HTTP_303_SEE_OTHER)
+            elif role == 'student':
+                return RedirectResponse(url="/studentdashboard", status_code=status.HTTP_303_SEE_OTHER)
+            elif role == 'alumni':
+                return RedirectResponse(url="/alumnidashboard", status_code=status.HTTP_303_SEE_OTHER)
+            else:
+                return RedirectResponse(url="/dashboard", status_code=status.HTTP_303_SEE_OTHER)
         else:
             return RedirectResponse(url="/registration", status_code=status.HTTP_303_SEE_OTHER)
+    else:
+        return RedirectResponse('/login')
