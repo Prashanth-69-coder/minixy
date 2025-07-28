@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minixy - User Profile</title>
+    <title>Minixy - Student Profile</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -26,10 +26,6 @@
         }
         .nav-item:not(.active):hover {
             background-color: #eef2ff;
-        }
-        .profile-card-sidebar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            box-shadow: 0 8px 24px rgba(118, 75, 162, 0.2);
         }
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -104,24 +100,24 @@
             <div class="w-10 h-10 brand-logo rounded-xl flex items-center justify-center text-white font-bold text-xl">M</div>
             <div class="ml-3">
                 <h1 class="text-lg font-bold text-gray-800">Minixy</h1>
-                <p class="text-xs text-gray-500">Alumni Network</p>
+                <p class="text-xs text-gray-500">Student Network</p>
             </div>
         </div>
         <nav class="flex-1 py-6 space-y-2 px-4">
-            <a href="{{ url_for('alumni_dashboard') }}" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
-                <i class="fas fa-home w-6 text-center"></i><span class="ml-3">Feed</span>
+            <a href="{{ url_for('student_dashboard') }}" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
+                <i class="fas fa-newspaper w-6 text-center"></i><span class="ml-3">Community Feed</span>
             </a>
-            <a href="{{ url_for('alumni_mentorship') }}" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
-                <i class="fas fa-handshake w-6 text-center"></i><span class="ml-3">Mentorship Hub</span>
+            <a href="{{ url_for('student_mentorhub') }}" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
+                <i class="fas fa-handshake w-6 text-center"></i><span class="ml-3">Find a Mentor</span>
             </a>
-            <a href="{{ url_for('alumni_jobs') }}" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
-                <i class="fas fa-briefcase w-6 text-center"></i><span class="ml-3">Job Referrals</span>
+            <a href="{{ url_for('student_jobs') }}" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
+                <i class="fas fa-briefcase w-6 text-center"></i><span class="ml-3">Job Opportunities</span>
             </a>
-            <a href="{{ url_for('alumni_messages') }}" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
+            <a href="{{ url_for('student_messages') }}" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
                 <i class="fas fa-comments w-6 text-center"></i><span class="ml-3">Messages</span>
             </a>
-            <a href="{{ url_for('alumni_profile') }}" class="nav-item active flex items-center py-3 px-4 rounded-lg font-medium transition-colors">
-                <i class="fas fa-user-circle w-6 text-center"></i><span class="ml-3">Profile</span>
+            <a href="{{ url_for('student_profile') }}" class="nav-item active flex items-center py-3 px-4 rounded-lg font-medium transition-colors">
+                <i class="fas fa-user-circle w-6 text-center"></i><span class="ml-3">My Profile</span>
             </a>
         </nav>
     </aside>
@@ -138,17 +134,14 @@
                         <div class="p-8 pt-0">
                             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end -mt-20 sm:-mt-0">
                                 <div class="flex flex-col sm:flex-row sm:items-end space-y-4 sm:space-y-0 sm:space-x-6">
-                                    <img src="{{ profile.profile_picture or 'https://placehold.co/160x160/667EEA/FFFFFF?text=' ~ (profile.first_name[0] ~ profile.last_name[0]) if profile.first_name and profile.last_name else 'JD' }}" alt="Profile Picture" class="profile-picture object-cover">
+                                    <img src="https://placehold.co/160x160/667EEA/FFFFFF?text={{ (profile.first_name[0] if profile and profile.first_name else 'S') }}{{ (profile.last_name[0] if profile and profile.last_name else '') }}" alt="Profile Picture" class="profile-picture object-cover">
                                     <div class="pb-4">
-                                        <h1 class="text-3xl font-bold text-gray-900">{{ profile.first_name }} {{ profile.last_name }}</h1>
-                                        <p class="text-lg text-gray-600 font-medium">{{ profile.headline or 'Add a headline' }}</p>
-                                        {% if profile.role %}
-                                        <span class="inline-block bg-indigo-100 text-indigo-700 text-xs font-semibold px-3 py-1 rounded-full mt-2">{{ profile.role|capitalize }}</span>
-                                        {% endif %}
+                                        <h1 class="text-3xl font-bold text-gray-900">{{ profile.first_name if profile else 'Student' }} {{ profile.last_name if profile else '' }}</h1>
+                                        <p class="text-lg text-gray-600 font-medium">{{ profile.headline if profile and profile.headline else 'Student' }}</p>
                                     </div>
                                 </div>
                                 <div class="flex-shrink-0 pb-4">
-                                    <button class="btn-primary py-2 px-5 rounded-lg flex items-center" id="editProfileBtn">
+                                    <button class="btn-primary py-2 px-5 rounded-lg flex items-center text-white" id="editProfileBtn">
                                         <i class="fas fa-pencil-alt mr-2 text-xs"></i>Edit Profile
                                     </button>
                                 </div>
@@ -159,31 +152,39 @@
                     <!-- About Card -->
                     <div class="profile-card">
                         <h2 class="text-2xl font-bold text-gray-900 mb-4">About</h2>
-                        <p class="text-gray-700 leading-relaxed whitespace-pre-wrap">{{ profile.bio or 'No bio yet. Click "Edit Profile" to add.' }}</p>
+                        <p class="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                            {% if profile and profile.bio %}
+                                {{ profile.bio }}
+                            {% else %}
+                                <span class="text-gray-500 italic">No bio added yet. Click "Edit Profile" to add your bio.</span>
+                            {% endif %}
+                        </p>
                     </div>
 
-                    <!-- Experience Card -->
+                    <!-- Projects Card -->
                     <div class="profile-card">
-                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Experience</h2>
-                        {% if profile.experience %}
-                            <div class="text-gray-700 leading-relaxed whitespace-pre-wrap">{{ profile.experience }}</div>
-                        {% else %}
-                            <div class="text-gray-500 italic">No experience added yet. <a href="#" class="text-indigo-600 underline" onclick="document.getElementById('editProfileBtn').click()">Click here to add.</a></div>
-                        {% endif %}
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Projects</h2>
+                        <div class="text-gray-700 leading-relaxed">
+                            {% if profile and profile.projects %}
+                                <div class="whitespace-pre-wrap">{{ profile.projects }}</div>
+                            {% else %}
+                                <span class="text-gray-500 italic">No projects added yet. Click "Edit Profile" to add your projects.</span>
+                            {% endif %}
+                        </div>
                     </div>
 
                     <!-- Skills Card -->
                     <div class="profile-card">
-                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Skills & Expertise</h2>
-                        {% if profile.skills and profile.skills|length > 0 %}
-                            <div class="flex flex-wrap gap-3">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Skills</h2>
+                        <div class="flex flex-wrap gap-3">
+                            {% if profile and profile.skills %}
                                 {% for skill in profile.skills %}
                                     <span class="skill-tag">{{ skill }}</span>
                                 {% endfor %}
-                            </div>
-                        {% else %}
-                            <div class="text-gray-500 italic">No skills added yet. <a href="#" class="text-indigo-600 underline" onclick="document.getElementById('editProfileBtn').click()">Click here to add.</a></div>
-                        {% endif %}
+                            {% else %}
+                                <span class="text-gray-500 italic">No skills added yet. Click "Edit Profile" to add your skills.</span>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -196,7 +197,7 @@
             <div class="flex justify-between items-start mb-4">
                 <div>
                     <h2 class="text-2xl font-bold text-gray-900">Edit Profile</h2>
-                    <p class="text-gray-500 mt-1">Update your professional information.</p>
+                    <p class="text-gray-500 mt-1">Update your student information.</p>
                 </div>
                 <button id="closeModalBtn" class="text-gray-400 hover:text-gray-600 transition-colors">
                     <i class="fas fa-times text-xl"></i>
@@ -206,28 +207,28 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
                         <label for="modal-first-name" class="text-sm font-semibold text-gray-700">First Name</label>
-                        <input type="text" id="modal-first-name" name="first_name" class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all">
+                        <input type="text" id="modal-first-name" name="first_name" value="{{ profile.first_name if profile else '' }}" class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all">
                     </div>
                     <div>
                         <label for="modal-last-name" class="text-sm font-semibold text-gray-700">Last Name</label>
-                        <input type="text" id="modal-last-name" name="last_name" class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all">
+                        <input type="text" id="modal-last-name" name="last_name" value="{{ profile.last_name if profile else '' }}" class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all">
                     </div>
                 </div>
                 <div>
                     <label for="modal-headline" class="text-sm font-semibold text-gray-700">Headline</label>
-                    <input type="text" id="modal-headline" name="headline" class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all">
+                    <input type="text" id="modal-headline" name="headline" placeholder="e.g. Computer Science Student" value="{{ profile.headline if profile else '' }}" class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all">
                 </div>
                 <div>
-                    <label for="modal-bio" class="text-sm font-semibold text-gray-700">Bio (About)</label>
-                    <textarea id="modal-bio" name="bio" rows="4" class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all"></textarea>
+                    <label for="modal-bio" class="text-sm font-semibold text-gray-700">About</label>
+                    <textarea id="modal-bio" name="bio" rows="4" placeholder="Tell us about yourself..." class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all">{{ profile.bio if profile else '' }}</textarea>
                 </div>
                 <div>
-                    <label for="modal-experience" class="text-sm font-semibold text-gray-700">Experience</label>
-                    <textarea id="modal-experience" name="experience" rows="4" class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all"></textarea>
+                    <label for="modal-projects" class="text-sm font-semibold text-gray-700">Projects</label>
+                    <textarea id="modal-projects" name="projects" rows="4" placeholder="Describe your projects..." class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all">{{ profile.projects if profile else '' }}</textarea>
                 </div>
                 <div>
                     <label for="modal-skills" class="text-sm font-semibold text-gray-700">Skills</label>
-                    <input type="text" id="modal-skills" name="skills" placeholder="Enter skills separated by commas" class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all">
+                    <input type="text" id="modal-skills" name="skills" placeholder="Enter skills separated by commas" value="{{ profile.skills | join(', ') if profile and profile.skills else '' }}" class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all">
                 </div>
                 <div class="flex justify-end space-x-3 pt-4">
                     <button type="button" id="cancelModalBtn" class="px-5 py-2 text-sm font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition">Cancel</button>
@@ -237,12 +238,6 @@
         </div>
     </div>
 
-    {% set first_name = profile.first_name|e %}
-    {% set last_name = profile.last_name|e %}
-    {% set headline = profile.headline|default('', true)|e %}
-    {% set bio = profile.bio|default('', true)|e %}
-    {% set experience = profile.experience|default('', true)|e %}
-    {% set skills_str = profile.skills|join(', ') if profile.skills else '' %}
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         const editProfileModal = document.getElementById('editProfileModal');
@@ -252,12 +247,6 @@
         const editProfileForm = document.getElementById('editProfileForm');
 
         const openModal = () => {
-            document.getElementById('modal-first-name').value = `{{ first_name }}`;
-            document.getElementById('modal-last-name').value = `{{ last_name }}`;
-            document.getElementById('modal-headline').value = `{{ headline }}`;
-            document.getElementById('modal-bio').value = `{{ bio }}`;
-            document.getElementById('modal-experience').value = `{{ experience }}`;
-            document.getElementById('modal-skills').value = `{{ skills_str }}`;
             editProfileModal.classList.add('active');
         };
 
@@ -275,25 +264,34 @@
             }
         });
 
-        editProfileForm.addEventListener('submit', function(e) {
+        editProfileForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const formData = new FormData(editProfileForm);
-            fetch('/api/profile/update', {
-                method: 'POST',
-                body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
+
+            try {
+                const response = await fetch('/api/student/profile/update', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to update profile');
+                }
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Profile updated successfully!');
+                    closeModal();
+                    // Reload the page to show updated data
                     location.reload();
                 } else {
-                    alert('Failed to update profile.');
+                    alert('Error updating profile: ' + (result.error || 'Unknown error'));
                 }
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Error updating profile:', error);
-                alert('An error occurred. Please try again.');
-            });
+                alert('Failed to update profile. Please try again.');
+            }
         });
     });
     </script>

@@ -1,238 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard - Minixy</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-    body {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-    }
-    .glass-effect {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    .sidebar {
-      min-width: 220px;
-      background: rgba(255,255,255,0.85);
-      border-right: 1px solid rgba(102,126,234,0.1);
-      padding: 32px 0 32px 0;
-      height: 100vh;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 40;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .sidebar .brand-logo {
-      width: 52px;
-      height: 52px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-radius: 16px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      font-weight: 800;
-      font-size: 24px;
-      margin-bottom: 16px;
-    }
-    .sidebar .brand-name {
-      font-size: 22px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 32px;
-    }
-    .sidebar-nav {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      align-items: center;
-    }
-    .sidebar-link {
-      width: 80%;
-      padding: 12px 0;
-      border-radius: 12px;
-      text-align: center;
-      color: #4c1d95;
-      font-weight: 600;
-      transition: background 0.2s, color 0.2s;
-      text-decoration: none;
-      font-size: 16px;
-    }
-    .sidebar-link.active, .sidebar-link:hover {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: #fff;
-    }
-    .main-content {
-      margin-left: 240px;
-      padding: 40px 32px 32px 32px;
-    }
-    .dashboard-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 32px;
-    }
-    .dashboard-title {
-      font-size: 32px;
-      font-weight: 800;
-      color: #4c1d95;
-    }
-    .admin-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      font-weight: 700;
-      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
-    }
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 32px;
-      margin-bottom: 40px;
-    }
-    .stat-card {
-      background: rgba(255,255,255,0.9);
-      border-radius: 20px;
-      padding: 32px 24px;
-      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.08);
-      text-align: center;
-      transition: box-shadow 0.2s;
-    }
-    .stat-card:hover {
-      box-shadow: 0 16px 48px rgba(102, 126, 234, 0.15);
-    }
-    .stat-title {
-      font-size: 18px;
-      color: #64748b;
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-    .stat-value {
-      font-size: 32px;
-      font-weight: 800;
-      color: #4c1d95;
-    }
-    .management-section {
-      background: rgba(255,255,255,0.95);
-      border-radius: 20px;
-      padding: 32px 24px;
-      margin-bottom: 32px;
-      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.08);
-    }
-    .management-title {
-      font-size: 22px;
-      font-weight: 700;
-      color: #4c1d95;
-      margin-bottom: 18px;
-    }
-    .management-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-    .management-link {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: #fff;
-      border-radius: 14px;
-      padding: 14px 28px;
-      font-size: 16px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: background 0.2s, transform 0.2s;
-      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.10);
-    }
-    .management-link:hover {
-      background: #4c1d95;
-      transform: translateY(-2px) scale(1.03);
-    }
-    @media (max-width: 900px) {
-      .sidebar { min-width: 60px; padding: 16px 0; }
-      .sidebar .brand-name { display: none; }
-      .main-content { margin-left: 80px; padding: 24px 8px; }
-      .dashboard-title { font-size: 22px; }
-      .stat-card { padding: 18px 8px; }
-      .management-section { padding: 18px 8px; }
-    }
-    @media (max-width: 600px) {
-      .sidebar { display: none; }
-      .main-content { margin-left: 0; padding: 12px 2vw; }
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - Minixy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Consistent Base Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f8fa;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .brand-logo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 12px rgba(118, 75, 162, 0.2);
+        }
+        .nav-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(118, 75, 162, 0.2);
+        }
+        .nav-item:not(.active):hover {
+            background-color: #eef2ff;
+        }
+        
+        /* Admin Dashboard Specific Styles */
+        .stat-card {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .management-section {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+        }
+        .management-link {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .management-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(118, 75, 162, 0.3);
+        }
+    </style>
 </head>
-<body>
-  <div class="sidebar glass-effect">
-    <div class="brand-logo">M</div>
-    <div class="brand-name">Minixy</div>
-    <nav class="sidebar-nav">
-      <a href="#" class="sidebar-link active">Dashboard</a>
-      <a href="#" class="sidebar-link">Users</a>
-      <a href="#" class="sidebar-link">Alumni</a>
-      <a href="#" class="sidebar-link">Students</a>
-      <a href="#" class="sidebar-link">Events</a>
-      <a href="#" class="sidebar-link">Settings</a>
-      <a href="#" class="sidebar-link">Logout</a>
-    </nav>
-  </div>
-  <div class="main-content">
-    <div class="dashboard-header">
-      <div class="dashboard-title">Admin Dashboard</div>
-      <div class="admin-avatar">A</div>
-    </div>
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-title">Total Users</div>
-        <div class="stat-value">2,340</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-title">Active Alumni</div>
-        <div class="stat-value">1,200</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-title">Active Students</div>
-        <div class="stat-value">1,000</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-title">Events Hosted</div>
-        <div class="stat-value">24</div>
-      </div>
-    </div>
-    <div class="management-section">
-      <div class="management-title">Quick Management</div>
-      <div class="management-links">
-        <a href="#" class="management-link">Manage Users</a>
-        <a href="#" class="management-link">Approve Alumni</a>
-        <a href="#" class="management-link">Review Events</a>
-        <a href="#" class="management-link">Platform Settings</a>
-      </div>
-    </div>
-    <div class="management-section">
-      <div class="management-title">Recent Activity</div>
-      <ul style="color:#64748b; font-size:15px;">
-        <li>✔️ New alumni approved: John Doe</li>
-        <li>✔️ Event created: Career Fair 2024</li>
-        <li>✔️ User reported: Jane Smith</li>
-        <li>✔️ Settings updated: Platform Policy</li>
-      </ul>
-    </div>
-  </div>
+<body class="flex h-screen overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside class="w-80 bg-white border-r border-gray-200 flex-col flex-shrink-0 hidden lg:flex">
+        <div class="h-20 flex items-center px-6 border-b border-gray-200">
+            <div class="w-10 h-10 brand-logo rounded-xl flex items-center justify-center text-white font-bold text-xl">M</div>
+            <div class="ml-3">
+                <h1 class="text-lg font-bold text-gray-800">Minixy Admin</h1>
+                <p class="text-xs text-gray-500">Control Panel</p>
+            </div>
+        </div>
+        <nav class="flex-1 py-6 space-y-2 px-4">
+            <a href="#" class="nav-item active flex items-center py-3 px-4 rounded-lg font-medium transition-colors">
+                <i class="fas fa-tachometer-alt w-6 text-center"></i><span class="ml-3">Dashboard</span>
+            </a>
+            <a href="#" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
+                <i class="fas fa-users-cog w-6 text-center"></i><span class="ml-3">Users</span>
+            </a>
+            <a href="#" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
+                <i class="fas fa-user-graduate w-6 text-center"></i><span class="ml-3">Alumni</span>
+            </a>
+            <a href="#" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
+                <i class="fas fa-user-friends w-6 text-center"></i><span class="ml-3">Students</span>
+            </a>
+            <a href="#" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
+                <i class="fas fa-calendar-alt w-6 text-center"></i><span class="ml-3">Events</span>
+            </a>
+            <a href="#" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
+                <i class="fas fa-cogs w-6 text-center"></i><span class="ml-3">Settings</span>
+            </a>
+            <a href="#" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
+                <i class="fas fa-sign-out-alt w-6 text-center"></i><span class="ml-3">Logout</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col overflow-y-auto">
+        <!-- Header -->
+        <header class="sticky top-0 bg-white/80 backdrop-blur-lg z-10 border-b border-gray-200">
+            <div class="px-8 py-5 flex items-center justify-between">
+                <h1 class="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
+                <div class="w-10 h-10 bg-gray-800 text-white flex items-center justify-center rounded-full text-lg font-bold">A</div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="p-8">
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="stat-card p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center">
+                        <div class="bg-indigo-100 text-indigo-600 p-3 rounded-full">
+                            <i class="fas fa-users text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Total Users</p>
+                            <p class="text-2xl font-bold text-gray-800">2,340</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center">
+                        <div class="bg-green-100 text-green-600 p-3 rounded-full">
+                            <i class="fas fa-user-graduate text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Active Alumni</p>
+                            <p class="text-2xl font-bold text-gray-800">1,200</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center">
+                        <div class="bg-yellow-100 text-yellow-600 p-3 rounded-full">
+                            <i class="fas fa-user-friends text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Active Students</p>
+                            <p class="text-2xl font-bold text-gray-800">1,000</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card p-6 rounded-xl shadow-sm">
+                    <div class="flex items-center">
+                        <div class="bg-purple-100 text-purple-600 p-3 rounded-full">
+                            <i class="fas fa-calendar-check text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Events Hosted</p>
+                            <p class="text-2xl font-bold text-gray-800">24</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Management Sections -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2">
+                    <div class="management-section p-6 rounded-xl shadow-sm">
+                        <h2 class="text-xl font-bold text-gray-800 mb-4">Quick Management</h2>
+                        <div class="flex flex-wrap gap-4">
+                            <a href="#" class="management-link text-white font-semibold py-3 px-5 rounded-lg text-sm">Manage Users</a>
+                            <a href="#" class="management-link text-white font-semibold py-3 px-5 rounded-lg text-sm">Approve Alumni</a>
+                            <a href="#" class="management-link text-white font-semibold py-3 px-5 rounded-lg text-sm">Review Events</a>
+                            <a href="#" class="management-link text-white font-semibold py-3 px-5 rounded-lg text-sm">Platform Settings</a>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="management-section p-6 rounded-xl shadow-sm">
+                        <h2 class="text-xl font-bold text-gray-800 mb-4">Recent Activity</h2>
+                        <ul class="space-y-3 text-sm text-gray-600">
+                            <li class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i>New alumni approved: John Doe</li>
+                            <li class="flex items-center"><i class="fas fa-plus-circle text-blue-500 mr-3"></i>Event created: Career Fair 2024</li>
+                            <li class="flex items-center"><i class="fas fa-exclamation-triangle text-yellow-500 mr-3"></i>User reported: Jane Smith</li>
+                            <li class="flex items-center"><i class="fas fa-cog text-gray-500 mr-3"></i>Settings updated: Platform Policy</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 </body>
-</html> 
+</html>

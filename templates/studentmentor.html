@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minixy - Find a Mentor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Consistent Base Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f8fa;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .brand-logo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 12px rgba(118, 75, 162, 0.2);
+        }
+        .nav-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(118, 75, 162, 0.2);
+        }
+        .nav-item:not(.active):hover {
+            background-color: #eef2ff;
+        }
+        .profile-card-sidebar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 8px 24px rgba(118, 75, 162, 0.2);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(118, 75, 162, 0.3);
+        }
+        .btn-secondary {
+            background-color: #eef2ff;
+            color: #4f46e5;
+        }
+        .btn-secondary:hover {
+            background-color: #e0e7ff;
+        }
+
+        /* Mentor Hub Specific Styles */
+        .mentor-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+        .mentor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .expertise-tag {
+            background-color: #eef2ff;
+            color: #4f46e5;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 100;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            transform: scale(0.95) translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        /* Mobile Navigation */
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+        .mobile-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .mobile-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+        @media (max-width: 768px) {
+            .mentor-card {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+            .mentor-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <!-- Mobile Menu Button -->
+    <button id="mobile-menu-btn" class="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-lg">
+        <i class="fas fa-bars text-gray-600"></i>
+    </button>
+
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="mobile-overlay fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar w-80 bg-white border-r border-gray-200 flex-col flex-shrink-0 hidden lg:flex">
+        <div class="h-20 flex items-center px-6 border-b border-gray-200">
+            <div class="w-10 h-10 brand-logo rounded-xl flex items-center justify-center text-white font-bold text-xl">M</div>
+            <div class="ml-3">
+                <h1 class="text-lg font-bold text-gray-800">Minixy</h1>
+                <p class="text-xs text-gray-500">Student Network</p>
+            </div>
+        </div>
+        <nav class="flex-1 py-6 space-y-2 px-4">
+            <a href="{{ url_for('student_dashboard') }}" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
+                <i class="fas fa-newspaper w-6 text-center"></i><span class="ml-3">Alumni Feed</span>
+            </a>
+            <a href="{{ url_for('student_mentorhub') }}" class="nav-item active flex items-center py-3 px-4 rounded-lg font-medium transition-colors">
+                <i class="fas fa-handshake w-6 text-center"></i><span class="ml-3">Find a Mentor</span>
+            </a>
+            <a href="{{ url_for('student_jobs') }}" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
+                <i class="fas fa-briefcase w-6 text-center"></i><span class="ml-3">Job Opportunities</span>
+            </a>
+            <a href="{{ url_for('student_messages') }}" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
+                <i class="fas fa-comments w-6 text-center"></i><span class="ml-3">Messages</span>
+            </a>
+            <a href="{{ url_for('student_profile') }}" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
+                <i class="fas fa-user-circle w-6 text-center"></i><span class="ml-3">Profile</span>
+            </a>
+        </nav>
+        
+        <!-- Profile Section -->
+        <div class="p-4 border-t border-gray-200">
+            <div class="profile-card-sidebar rounded-xl p-4 text-white">
+                <div class="flex items-center">
+                    <img src="https://placehold.co/48x48/7c3aed/ffffff?text={{ (profile.first_name[0] if profile and profile.first_name else 'S') }}{{ (profile.last_name[0] if profile and profile.last_name else '') }}" alt="Profile" class="w-12 h-12 rounded-full">
+                    <div class="ml-3">
+                        <h3 class="font-semibold">{{ profile.first_name if profile else 'Student' }} {{ profile.last_name if profile else '' }}</h3>
+                        <p class="text-sm opacity-90">{{ profile.headline if profile and profile.headline else 'Student' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Mobile Sidebar -->
+    <aside id="mobile-sidebar" class="mobile-menu fixed top-0 left-0 h-full w-80 bg-white border-r border-gray-200 z-50 lg:hidden">
+        <div class="h-20 flex items-center px-6 border-b border-gray-200">
+            <div class="w-10 h-10 brand-logo rounded-xl flex items-center justify-center text-white font-bold text-xl">M</div>
+            <div class="ml-3">
+                <h1 class="text-lg font-bold text-gray-800">Minixy</h1>
+                <p class="text-xs text-gray-500">Student Network</p>
+            </div>
+            <button id="close-mobile-menu" class="ml-auto p-2 text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="flex-1 py-6 space-y-2 px-4">
+            <a href="{{ url_for('student_dashboard') }}" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
+                <i class="fas fa-newspaper w-6 text-center"></i><span class="ml-3">Alumni Feed</span>
+            </a>
+            <a href="{{ url_for('student_mentorhub') }}" class="nav-item active flex items-center py-3 px-4 rounded-lg font-medium transition-colors">
+                <i class="fas fa-handshake w-6 text-center"></i><span class="ml-3">Find a Mentor</span>
+            </a>
+            <a href="{{ url_for('student_jobs') }}" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
+                <i class="fas fa-briefcase w-6 text-center"></i><span class="ml-3">Job Opportunities</span>
+            </a>
+            <a href="{{ url_for('student_messages') }}" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
+                <i class="fas fa-comments w-6 text-center"></i><span class="ml-3">Messages</span>
+            </a>
+            <a href="{{ url_for('student_profile') }}" class="nav-item flex items-center py-3 px-4 rounded-lg text-gray-600 font-medium transition-colors">
+                <i class="fas fa-user-circle w-6 text-center"></i><span class="ml-3">Profile</span>
+            </a>
+        </nav>
+        
+        <!-- Mobile Profile Section -->
+        <div class="p-4 border-t border-gray-200">
+            <div class="profile-card-sidebar rounded-xl p-4 text-white">
+                <div class="flex items-center">
+                    <img src="https://placehold.co/48x48/7c3aed/ffffff?text={{ (profile.first_name[0] if profile and profile.first_name else 'S') }}{{ (profile.last_name[0] if profile and profile.last_name else '') }}" alt="Profile" class="w-12 h-12 rounded-full">
+                    <div class="ml-3">
+                        <h3 class="font-semibold">{{ profile.first_name if profile else 'Student' }} {{ profile.last_name if profile else '' }}</h3>
+                        <p class="text-sm opacity-90">{{ profile.headline if profile and profile.headline else 'Student' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col overflow-y-auto">
+        <!-- Header -->
+        <header class="sticky top-0 bg-white/80 backdrop-blur-lg z-10 border-b border-gray-200">
+            <div class="px-4 lg:px-8 py-4 lg:py-5">
+                <div class="flex items-center justify-between">
+                    <div class="lg:ml-0 ml-12">
+                        <h1 class="text-xl lg:text-2xl font-bold text-gray-800">Find a Mentor</h1>
+                        <p class="text-sm text-gray-500 mt-1">Connect with experienced alumni to guide your journey</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button class="btn-primary text-white font-semibold py-2 px-4 lg:px-5 rounded-lg flex items-center text-sm">
+                            <i class="fas fa-search mr-2 text-xs"></i>Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="p-4 lg:p-8">
+            <!-- Search and Filters -->
+            <div class="bg-white p-6 rounded-xl border border-gray-200 mb-6 lg:mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                    <div class="col-span-1 md:col-span-2">
+                        <label for="search" class="text-xs font-semibold text-gray-600">SEARCH MENTORS</label>
+                        <div class="relative mt-1">
+                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="search" placeholder="Name, company, or expertise" class="w-full pl-11 pr-4 py-2.5 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="expertise" class="text-xs font-semibold text-gray-600">EXPERTISE</label>
+                        <select id="expertise" class="w-full mt-1 px-4 py-2.5 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all appearance-none">
+                            <option>All Expertise</option>
+                            <option>Software Engineering</option>
+                            <option>Product Management</option>
+                            <option>Data Science</option>
+                            <option>Marketing</option>
+                            <option>Finance</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button class="w-full btn-primary text-white font-semibold py-2.5 rounded-lg">Search</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mentor Grid -->
+            <div class="mentor-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% if alumni_list %}
+                    {% for alumni in alumni_list %}
+                    <div class="mentor-card bg-white p-6 rounded-xl shadow-sm flex flex-col" data-mentor-id="{{ alumni.id }}" data-mentor-name="{{ alumni.first_name }} {{ alumni.last_name }}">
+                        <div class="flex items-center mb-4">
+                            <img src="https://placehold.co/56x56/7c3aed/ffffff?text={{ alumni.first_name[0]|default('A') }}{{ alumni.last_name[0]|default('') }}" alt="Avatar" class="w-14 h-14 rounded-full flex-shrink-0">
+                            <div class="ml-4">
+                                <h3 class="font-bold text-gray-900">{{ alumni.first_name }} {{ alumni.last_name }}</h3>
+                                <p class="text-sm text-gray-600">{{ alumni.headline|default('Alumni') }}</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 leading-relaxed flex-grow">{{ alumni.bio|truncate(120, True) if alumni.bio else 'No bio available.' }}</p>
+                        <div class="flex flex-wrap gap-2 my-4">
+                            {% if alumni.skills %}
+                                {% for skill in alumni.skills[:3] %}
+                                    <span class="expertise-tag text-xs font-semibold px-3 py-1 rounded-full">{{ skill }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="flex space-x-3 mt-auto pt-4 border-t border-gray-100">
+                            <button class="w-full text-sm font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition py-2">View Profile</button>
+                            <button class="request-btn w-full btn-primary text-white font-semibold py-2 rounded-lg text-sm">Request</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-span-full text-center py-12">
+                        <i class="fas fa-users text-4xl text-gray-300 mb-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-600 mb-2">No mentors available</h3>
+                        <p class="text-gray-500">Check back later for available mentors!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+
+    <!-- Request Modal -->
+    <div id="request-modal" class="modal-overlay fixed inset-0 flex items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg p-8">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Request Mentorship</h2>
+                    <p class="text-gray-500 mt-1">To <strong id="mentor-name-modal" class="text-gray-700"></strong></p>
+                </div>
+                <button id="close-modal-btn" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form id="request-form" class="space-y-5 mt-6">
+                <input type="hidden" id="receiver-id-input" name="receiver_id">
+                <div>
+                    <label for="description" class="text-sm font-semibold text-gray-700">Message</label>
+                    <textarea id="description" name="description" rows="5" class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all" placeholder="Introduce yourself and what you'd like to discuss..." required></textarea>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" id="cancel-btn" class="px-5 py-2 text-sm font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition">Cancel</button>
+                    <button type="submit" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg">Send Request</button>
+                </div>
+            </form>
+            <div id="success-message" class="hidden mt-4 p-4 bg-green-100 text-green-700 rounded-lg text-sm font-medium">
+                Your request has been sent successfully!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mobile menu functionality
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileSidebar = document.getElementById('mobile-sidebar');
+        const mobileOverlay = document.getElementById('mobile-overlay');
+        const closeMobileMenu = document.getElementById('close-mobile-menu');
+
+        function openMobileMenu() {
+            mobileSidebar.classList.add('active');
+            mobileOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileMenuFunc() {
+            mobileSidebar.classList.remove('active');
+            mobileOverlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        mobileMenuBtn.addEventListener('click', openMobileMenu);
+        closeMobileMenu.addEventListener('click', closeMobileMenuFunc);
+        mobileOverlay.addEventListener('click', closeMobileMenuFunc);
+
+        // Close mobile menu on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mobileSidebar.classList.contains('active')) {
+                closeMobileMenuFunc();
+            }
+        });
+
+        // Mentorship request modal functionality
+        const modal = document.getElementById('request-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const requestForm = document.getElementById('request-form');
+        const mentorNameModal = document.getElementById('mentor-name-modal');
+        const receiverIdInput = document.getElementById('receiver-id-input');
+        const successMessage = document.getElementById('success-message');
+
+        const openModal = (mentorId, mentorName) => {
+            mentorNameModal.textContent = mentorName;
+            receiverIdInput.value = mentorId;
+            modal.classList.add('active');
+        };
+
+        const closeModal = () => {
+            modal.classList.remove('active');
+            requestForm.reset();
+            successMessage.classList.add('hidden');
+        };
+
+        document.querySelectorAll('.request-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const card = e.target.closest('.mentor-card');
+                const mentorId = card.dataset.mentorId;
+                const mentorName = card.dataset.mentorName;
+                openModal(mentorId, mentorName);
+            });
+        });
+
+        closeModalBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        requestForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(requestForm);
+            const data = {
+                requester_id: "{{ profile.id }}",
+                receiver_id: formData.get('receiver_id'),
+                description: formData.get('description'),
+            };
+
+            try {
+                const response = await fetch('/api/student/mentor-request-message', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                successMessage.classList.remove('hidden');
+                setTimeout(closeModal, 2000);
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to send request. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>

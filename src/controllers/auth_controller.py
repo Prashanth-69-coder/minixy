@@ -37,7 +37,6 @@ def get_home(request:Request):
 @router.get('/login')
 def get_login(request: Request):
     user = logged_user(request)
-    print('user from logged_user:', user)
     if user:
         return RedirectResponse(
             url="/dashboard",
@@ -117,7 +116,7 @@ def make_login(request: Request, email: str = Form(...), password: str = Form(..
                     httponly=True,
                     secure=True,  # only use secure=True if you're serving over HTTPS
                     samesite='lax',
-                    max_age=3600
+                    max_age=604800
                 )
                 return response
             elif user_role == 'student':
@@ -175,17 +174,11 @@ def dashboard_redirect(request: Request):
         # Default fallback if role is missing or unknown
         return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
 
-@router.get('/studentdashboard')
-def student_dashboard(request: Request):
-    return templates.TemplateResponse("studentdashboard.html", {"request": request})
-
-@router.get('/alumnidashboard')
-def alumni_dashboard(request: Request):
-    return templates.TemplateResponse("alumnidashboard.html", {"request": request})
-
 @router.get('/admindashboard')
 def admin_dashboard(request: Request):
     return templates.TemplateResponse("admindashboard.html", {"request": request})
+
+# Removed conflicting route - now handled by student_controller.py
 
 @router.get('/details')
 def get_details(request: Request):
@@ -193,10 +186,21 @@ def get_details(request: Request):
 
 @router.post('/api/details')
 def post_details(request: Request, first_name: str = Form(...), last_name: str = Form(...)):
-    # Here you would save the details to the user profile in the database
-    # For now, just redirect to dashboard
     print(f"Received details: {first_name} {last_name}")
     return RedirectResponse(url="/dashboard", status_code=303)
+
+
+@router.post('/api/logout')
+def logout(request: Request):
+    response = RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
+    response.delete_cookie(key="user_session")
+    return response
+
+@router.get('/logout')
+def logout_get(request: Request):
+    response = RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
+    response.delete_cookie(key="user_session")
+    return response
 
 
 

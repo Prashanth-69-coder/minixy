@@ -15,3 +15,15 @@ class ProfileService:
     def get_role(self,user_id):
         res = self.profile_repo.get_role(user_id)
         return res
+
+    def get_all_alumni(self, current_user_id=None):
+        return self.profile_repo.get_all_alumni(current_user_id)
+
+    def update_profile(self, profile_data):
+        """Update user profile with new data"""
+        try:
+            res = self.profile_repo.update_profile(profile_data)
+            return res
+        except Exception as e:
+            print(f"Error updating profile: {e}")
+            raise e

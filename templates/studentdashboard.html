@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minixy - Student Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         * {
@@ -79,10 +80,8 @@
             box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
         }
 
-        .nav-item svg {
-            width: 22px;
-            height: 22px;
-            margin-right: 14px;
+        .nav-item .w-6 {
+            margin-right: 12px;
         }
 
         .post-card {
@@ -102,7 +101,7 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
+            height: 3px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             transform: scaleX(0);
             transition: transform 0.3s ease;
@@ -113,8 +112,8 @@
         }
 
         .post-card:hover {
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
-            transform: translateY(-4px);
+            transform: translateY(-8px);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.1);
             border-color: rgba(102, 126, 234, 0.2);
         }
 
@@ -122,78 +121,128 @@
             width: 56px;
             height: 56px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
             font-weight: 700;
-            font-size: 20px;
+            font-size: 18px;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
-            transition: all 0.3s ease;
+            flex-shrink: 0;
         }
 
-        .avatar:hover {
-            transform: scale(1.1);
-            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
+        .engagement-stats {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .engagement-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            color: #64748b;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .engagement-item:hover {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: #334155;
+            transform: translateY(-2px);
         }
 
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            border: none;
-            border-radius: 16px;
-            padding: 14px 28px;
+            padding: 12px 24px;
+            border-radius: 12px;
             font-weight: 600;
+            border: none;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn-primary:hover::before {
-            left: 100%;
+            display: inline-flex;
+            align-items: center;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
         }
+        
+        .btn-primary i {
+            margin-right: 8px;
+        }
 
         .btn-secondary {
-            background: rgba(102, 126, 234, 0.1);
-            color: #667eea;
-            border: 2px solid rgba(102, 126, 234, 0.2);
-            border-radius: 16px;
+            background: white;
+            color: #64748b;
             padding: 12px 24px;
+            border-radius: 12px;
             font-weight: 600;
+            border: 1px solid #e2e8f0;
             cursor: pointer;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+            display: inline-flex;
+            align-items: center;
         }
 
         .btn-secondary:hover {
-            background: rgba(102, 126, 234, 0.15);
-            border-color: rgba(102, 126, 234, 0.4);
+            background: #f8fafc;
+            color: #334155;
             transform: translateY(-2px);
-            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary i {
+            margin-right: 8px;
+        }
+
+        .header-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-bottom: 1px solid #e2e8f0;
+            backdrop-filter: blur(20px);
+        }
+
+        .profile-section {
+            padding: 24px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .quick-action-btn {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: #64748b;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .quick-action-btn:hover {
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            color: #334155;
+            transform: translateX(4px);
         }
 
         .stats-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border-radius: 20px;
+            background: white;
+            border-radius: 16px;
             padding: 24px;
             border: 1px solid #e2e8f0;
             text-align: center;
@@ -236,8 +285,8 @@
             font-size: 12px;
             font-weight: 700;
             position: absolute;
-            top: -8px;
-            right: -8px;
+            top: 10px;
+            right: 10px;
             box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
             animation: pulse 2s infinite;
         }
@@ -266,21 +315,7 @@
             font-weight: 700;
             box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
         }
-
-        .content-card {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            border: 2px solid rgba(102, 126, 234, 0.1);
-            border-radius: 16px;
-            padding: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .content-card:hover {
-            border-color: rgba(102, 126, 234, 0.3);
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            transform: translateY(-2px);
-        }
-
+        
         .floating-action {
             position: fixed;
             bottom: 32px;
@@ -297,635 +332,216 @@
             cursor: pointer;
             box-shadow: 0 12px 40px rgba(102, 126, 234, 0.4);
             transition: all 0.3s ease;
-            z-index: 100;
+            z-index: 1000;
         }
 
         .floating-action:hover {
-            transform: scale(1.1) translateY(-4px);
-            box-shadow: 0 16px 50px rgba(102, 126, 234, 0.5);
+            transform: translateY(-4px) scale(1.1);
+            box-shadow: 0 16px 48px rgba(102, 126, 234, 0.5);
         }
 
-        .header-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border-bottom: 1px solid #e2e8f0;
-            backdrop-filter: blur(20px);
-        }
-
-        .engagement-stats {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-            padding-top: 16px;
-            border-top: 1px solid #e2e8f0;
-        }
-
-        .engagement-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #64748b;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            padding: 8px 12px;
-            border-radius: 12px;
-        }
-
-        .engagement-item:hover {
-            color: #667eea;
-            background: rgba(102, 126, 234, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .profile-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 24px;
+        .rounded-20 {
             border-radius: 20px;
-            margin: 16px;
-        }
-
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .quick-action-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .quick-action-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        @media (max-width: 1024px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            .main-content {
-                margin-left: 0;
-            }
-        }
-
-        .create-post-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border: 2px dashed rgba(102, 126, 234, 0.3);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 24px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .create-post-card:hover {
-            border-color: rgba(102, 126, 234, 0.5);
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            transform: translateY(-2px);
-        }
-
-        .post-type-selector {
-            display: flex;
-            gap: 12px;
-            margin-top: 16px;
-        }
-
-        .post-type-btn {
-            background: rgba(102, 126, 234, 0.1);
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            color: #667eea;
-            padding: 8px 16px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .post-type-btn:hover {
-            background: rgba(102, 126, 234, 0.2);
-            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
     <div class="sidebar">
-        <div class="p-6 border-b border-gray-200">
-            <div class="flex items-center space-x-3">
+        <div class="p-6">
+            <div class="flex items-center space-x-3 mb-8">
                 <div class="brand-logo">M</div>
-                <h1 class="text-xl font-bold text-gray-900">Minixy</h1>
+                <div>
+                    <h1 class="text-xl font-bold text-gray-900">Minixy</h1>
+                    <p class="text-sm text-gray-500">Student Network</p>
+                </div>
             </div>
         </div>
 
-        <nav class="py-6">
-            <a href="#" class="nav-item active">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
-                </svg>
-                Feed
+        <nav class="px-4">
+            <a href="{{ url_for('student_dashboard') }}" class="nav-item active">
+                <i class="fas fa-newspaper w-6 text-center"></i>
+                Community Feed
+            </a>
+
+            <a href="{{ url_for('student_mentorhub') }}" class="nav-item">
+                <i class="fas fa-handshake w-6 text-center"></i>
+                Find a Mentor
+                <span class="notification-badge">5</span>
+            </a>
+
+            <a href="{{ url_for('student_jobs') }}" class="nav-item">
+                <i class="fas fa-briefcase w-6 text-center"></i>
+                Job Opportunities
+                <span class="notification-badge">8</span>
+            </a>
+
+            <a href="{{ url_for('student_messages') }}" class="nav-item">
+                <i class="fas fa-envelope w-6 text-center"></i>
+                Messages
             </a>
 
             <a href="#" class="nav-item">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
-                Find Mentors
-                <span class="notification-badge ml-auto">2</span>
+                <i class="fas fa-chart-line w-6 text-center"></i>
+                Analytics
             </a>
 
-            <a href="#" class="nav-item">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2h8z"/>
-                </svg>
-                Job Board
-                <span class="notification-badge ml-auto">12</span>
-            </a>
-
-            <a href="#" class="nav-item">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                </svg>
-                Discussions
-            </a>
-
-            <a href="#" class="nav-item">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
-                AMA Sessions
-                <span class="notification-badge ml-auto">1</span>
-            </a>
-
-            <a href="#" class="nav-item">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                </svg>
-                Learning Path
-            </a>
-
-            <a href="#" class="nav-item">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                </svg>
+            <a href="{{ url_for('student_profile') }}" class="nav-item">
+                <i class="fas fa-user w-6 text-center"></i>
                 Profile
             </a>
         </nav>
 
-        <div class="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-200">
-            <div class="flex items-center space-x-3">
-                <div class="avatar text-sm">AS</div>
+        <div class="profile-section mt-auto">
+            <div class="flex items-center space-x-3 mb-4">
+                <div class="avatar text-lg bg-white text-purple-600">{{ (profile.first_name[0] if profile and profile.first_name else 'S') }}{{ (profile.last_name[0] if profile and profile.last_name else '') }}</div>
                 <div>
-                    <div class="font-semibold text-gray-900">Alex Student</div>
-                    <div class="text-sm text-gray-500">Computer Science</div>
+                    <div class="font-bold text-lg">{{ profile.first_name if profile else 'Student' }} {{ profile.last_name if profile else '' }}</div>
+                    <div class="text-sm opacity-90">{{ profile.headline if profile and profile.headline else 'Student' }}</div>
+                    <div class="text-xs opacity-75">{{ profile.role if profile else 'Student' }}</div>
                 </div>
+            </div>
+            <div class="quick-actions">
+                <button class="quick-action-btn">Edit Profile</button>
+                <button class="quick-action-btn">Settings</button>
+                <button class="quick-action-btn">Help Center</button>
+                <a href="/logout" class="quick-action-btn w-full text-center">Sign Out</a>
             </div>
         </div>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
-        <!-- Header -->
-        <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
-            <div class="px-6 py-4">
+        <header class="header-gradient sticky top-0 z-40">
+            <div class="px-8 py-6">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-4">
-                        <h1 class="text-2xl font-bold text-gray-900">Student Feed</h1>
+                        <h1 class="text-3xl font-bold text-white">Community Feed</h1>
                         <div class="flex space-x-2">
                             <span class="newest-tag">NEWEST</span>
                             <span class="trending-tag">TRENDING</span>
                         </div>
-                    </div>
-
-                    <div class="flex items-center space-x-4">
-                        <button class="btn-secondary">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                            </svg>
-                            Search
-                        </button>
-                        <button class="btn-primary">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            Ask Question
-                        </button>
                     </div>
                 </div>
             </div>
         </header>
 
         <div class="flex">
-            <!-- Feed Content -->
-            <div class="flex-1 p-6 max-w-2xl">
-                <!-- Create Post -->
-                <div class="post-card mb-6">
-                    <div class="flex items-center space-x-3 mb-4">
-                        <div class="avatar text-sm">AS</div>
-                        <input type="text" placeholder="Ask a question or share your thoughts..." class="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500">
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <div class="flex space-x-4">
-                            <button class="flex items-center text-gray-500 hover:text-purple-600">
-                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                Question
-                            </button>
-                            <button class="flex items-center text-gray-500 hover:text-purple-600">
-                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                </svg>
-                                Photo
-                            </button>
-                            <button class="flex items-center text-gray-500 hover:text-purple-600">
-                                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2h8z"/>
-                                </svg>
-                                Job Help
-                            </button>
-                        </div>
-                        <button class="btn-primary">Post</button>
-                    </div>
-                </div>
-
-                <!-- Student Question Post -->
+            <div class="flex-1 p-8 max-w-3xl">
                 <div class="post-card">
-                    <div class="flex items-start space-x-3 mb-4">
-                        <div class="avatar text-sm bg-blue-500">EM</div>
-                        <div class="flex-1">
-                            <div class="flex items-center space-x-2 mb-1">
-                                <h3 class="font-semibold text-gray-900">Emma Martinez</h3>
-                                <span class="text-sm text-gray-500">@emmam</span>
-                                <span class="text-sm text-gray-500">•</span>
-                                <span class="text-sm text-gray-500">1h</span>
+                    <form method="post" action="/studentdashboard" enctype="multipart/form-data">
+                        <div class="flex items-start space-x-4">
+                             <div class="avatar text-lg">{{ (profile.first_name[0] if profile and profile.first_name else 'S') }}{{ (profile.last_name[0] if profile and profile.last_name else '') }}</div>
+                             <div class="w-full">
+                                <input type="text" name="title" placeholder="Title" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-lg placeholder-gray-500 focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none transition mb-3" required>
+                                <textarea name="description" rows="4" placeholder="Share your thoughts, experiences, or opportunities..." class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-lg placeholder-gray-500 focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none transition" required></textarea>
+                             </div>
+                        </div>
+                        <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
+                            <div class="flex items-center space-x-2">
+                                <label for="image-upload" class="flex items-center space-x-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition-colors cursor-pointer">
+                                    <i class="fas fa-image text-xl"></i>
+                                    <span class="font-semibold text-sm">Image</span>
+                                </label>
+                                <input type="file" id="image-upload" name="image" class="hidden" accept="image/*" multiple>
+                                <div id="image-preview" class="flex space-x-2"></div>
+                                <button type="button" class="flex items-center space-x-2 text-gray-600 hover:text-green-600 hover:bg-green-50 p-2 rounded-lg transition-colors">
+                                    <i class="fas fa-video text-xl"></i>
+                                    <span class="font-semibold text-sm">Video</span>
+                                </button>
+                                <button type="button" class="flex items-center space-x-2 text-gray-600 hover:text-orange-600 hover:bg-orange-50 p-2 rounded-lg transition-colors">
+                                    <i class="fas fa-calendar-alt text-xl"></i>
+                                    <span class="font-semibold text-sm">Event</span>
+                                </button>
                             </div>
-                            <p class="text-gray-600 text-sm">Computer Science Student • UC Berkeley</p>
+                            <button type="submit" class="btn-primary px-8 py-2">Post</button>
                         </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <div class="flex items-center space-x-2 mb-2">
-                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-semibold">QUESTION</span>
-                        </div>
-                        <h2 class="text-lg font-semibold text-gray-900 mb-2">How to prepare for technical interviews at FAANG companies?</h2>
-                        <p class="text-gray-700 mb-3">I'm a junior CS student and really want to land an internship at a top tech company. What should I focus on for technical interviews? Any specific resources or practice platforms you'd recommend?</p>
-
-                        <div class="flex flex-wrap gap-2 mb-3">
-                            <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">#TechnicalInterviews</span>
-                            <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">#FAANG</span>
-                            <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">#Internships</span>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-between pt-3 border-t border-gray-100">
-                        <div class="flex space-x-6">
-                            <button class="flex items-center space-x-2 text-gray-500 hover:text-red-500">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                                </svg>
-                                <span class="text-sm">18</span>
-                            </button>
-                            <button class="flex items-center space-x-2 text-gray-500 hover:text-blue-500">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                                </svg>
-                                <span class="text-sm">12</span>
-                            </button>
-                            <button class="flex items-center space-x-2 text-gray-500 hover:text-green-500">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
-                                </svg>
-                                <span class="text-sm">Share</span>
-                            </button>
-                        </div>
-                        <button class="text-gray-400 hover:text-gray-600">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-                            </svg>
-                        </button>
-                    </div>
+                    </form>
                 </div>
 
-                <!-- Alumni Response -->
+                {% for post in posts %}
                 <div class="post-card">
-                    <div class="flex items-start space-x-3 mb-4">
-                        <div class="avatar text-sm bg-green-500">RK</div>
+                    <div class="flex items-start space-x-4 mb-6">
+                        <div class="avatar text-lg bg-blue-500">{{ post.author_first_name[0]|default('U') }}</div>
                         <div class="flex-1">
-                            <div class="flex items-center space-x-2 mb-1">
-                                <h3 class="font-semibold text-gray-900">Raj Kumar</h3>
-                                <span class="text-sm text-gray-500">@rajkumar</span>
+                            <div class="flex items-center space-x-3 mb-2">
+                                <h3 class="font-bold text-lg text-gray-900">{{ post.author_first_name }} {{ post.author_last_name }}</h3>
+                                <span class="text-sm text-gray-500">@user</span>
                                 <span class="text-sm text-gray-500">•</span>
-                                <span class="text-sm text-gray-500">3h</span>
-                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">ALUMNI</span>
+                                <span class="text-sm text-gray-500">{{ post.created_at|default('now') }}</span>
                             </div>
-                            <p class="text-gray-600 text-sm">Software Engineer at Google • UC Berkeley '19</p>
+                            <p class="text-gray-600 font-medium">{{ post.author_role|default('User') }}</p>
                         </div>
                     </div>
-
+                    {% if post.image %}
                     <div class="mb-4">
-                        <h2 class="text-lg font-semibold text-gray-900 mb-2">My Journey from Student to Google SWE</h2>
-                        <p class="text-gray-700 mb-3">Sharing my experience and tips for landing a software engineering role at Google. From interview prep to what actually matters in the hiring process.</p>
-
-                        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-blue-500 rounded-lg flex items-center justify-center">
-                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                                    </svg>
-                                </div>
-                                <div class="flex-1">
-                                    <h4 class="font-semibold text-green-900">Complete Interview Prep Guide</h4>
-                                    <p class="text-sm text-green-700">LeetCode patterns, system design basics, and behavioral interview tips from a Google engineer.</p>
-                                    <p class="text-xs text-green-600 mt-1">Free resource • 45 min read</p>
-                                </div>
-                            </div>
-                        </div>
+                        <img src="{{ post.image }}" alt="Post Image" style="max-width: 100%; border-radius: 12px;" />
                     </div>
-
-                    <div class="flex items-center justify-between pt-3 border-t border-gray-100">
-                        <div class="flex space-x-6">
-                            <button class="flex items-center space-x-2 text-gray-500 hover:text-red-500">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.0 00-6.364 0z"/>
-                                </svg>
-                                <span class="text-sm">89</span>
-                            </button>
-                            <button class="flex items-center space-x-2 text-gray-500 hover:text-blue-500">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                                </svg>
-                                <span class="text-sm">34</span>
-                            </button>
-                            <button class="flex items-center space-x-2 text-gray-500 hover:text-green-500">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
-                                </svg>
-                                <span class="text-sm">Share</span>
-                            </button>
-                        </div>
-                        <button class="text-gray-400 hover:text-gray-600">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-                            </svg>
-                        </button>
+                    {% endif %}
+                    <div class="mb-6">
+                        <p class="text-gray-700 mb-4 text-lg leading-relaxed">{{ post.description|default('No content available.') }}</p>
                     </div>
-                </div>
-
-                <!-- Job Opportunity -->
-                <div class="post-card">
-                    <div class="flex items-start space-x-3 mb-4">
-                        <div class="avatar text-sm bg-purple-500">TL</div>
-                        <div class="flex-1">
-                            <div class="flex items-center space-x-2 mb-1">
-                                <h3 class="font-semibold text-gray-900">Taylor Lee</h3>
-                                <span class="text-sm text-gray-500">@taylorlee</span>
-                                <span class="text-sm text-gray-500">•</span>
-                                <span class="text-sm text-gray-500">5h</span>
-                                <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs font-semibold">RECRUITER</span>
-                            </div>
-                            <p class="text-gray-600 text-sm">Technical Recruiter at Meta</p>
+                    <div class="engagement-stats">
+                        <div class="engagement-item">
+                            <i class="far fa-thumbs-up"></i>
+                            <span class="font-semibold">Like</span>
                         </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <div class="flex items-center space-x-2 mb-2">
-                            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-semibold">INTERNSHIP</span>
+                        <div class="engagement-item">
+                            <i class="far fa-comment"></i>
+                            <span class="font-semibold">Comment</span>
                         </div>
-                        <h2 class="text-lg font-semibold text-gray-900 mb-2">Meta Summer 2024 Internship Applications Now Open!</h2>
-                        <p class="text-gray-700 mb-3">Exciting opportunity for students to join Meta's engineering teams this summer. We're looking for passionate students in software engineering, data science, and product management.</p>
-
-                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <h4 class="font-semibold text-blue-900">Software Engineering Intern</h4>
-                                    <p class="text-sm text-blue-700">Meta • Menlo Park, CA • Summer 2024</p>
-                                    <p class="text-sm text-blue-600 mt-1">$8,000/month • Housing stipend included</p>
-                                </div>
-                                <button class="btn-primary">Apply Now</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-between pt-3 border-t border-gray-100">
-                        <div class="flex space-x-6">
-                            <button class="flex items-center space-x-2 text-gray-500 hover:text-red-500">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                                </svg>
-                                <span class="text-sm">156</span>
-                            </button>
-                            <button class="flex items-center space-x-2 text-gray-500 hover:text-blue-500">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                                </svg>
-                                <span class="text-sm">67</span>
-                            </button>
-                            <button class="flex items-center space-x-2 text-gray-500 hover:text-green-500">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
-                                </svg>
-                                <span class="text-sm">Share</span>
-                            </button>
-                        </div>
-                        <button class="text-gray-400 hover:text-gray-600">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Mentorship Request -->
-                <div class="post-card">
-                    <div class="flex items-start space-x-3 mb-4">
-                        <div class="avatar text-sm bg-orange-500">JC</div>
-                        <div class="flex-1">
-                            <div class="flex items-center space-x-2 mb-1">
-                                <h3 class="font-semibold text-gray-900">Jordan Chen</h3>
-                                <span class="text-sm text-gray-500">@jordanc</span>
-                                <span class="text-sm text-gray-500">•</span>
-                                <span class="text-sm text-gray-500">8h</span>
-                            </div>
-                            <p class="text-gray-600 text-sm">Data Science Student • Stanford University</p>
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <div class="flex items-center space-x-2 mb-2">
-                            <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-semibold">MENTORSHIP</span>
-                        </div>
-                        <h2 class="text-lg font-semibold text-gray-900 mb-2">Looking for a Data Science Mentor</h2>
-                        <p class="text-gray-700 mb-3">Hi everyone! I'm a sophomore studying data science and looking for guidance on career paths in ML/AI. Would love to connect with alumni working in data science roles at tech companies.</p>
-
-                        <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <h4 class="font-semibold text-orange-900">Seeking Mentorship</h4>
-                                    <p class="text-sm text-orange-700">Data Science • Machine Learning • Career Guidance</p>
-                                    <p class="text-sm text-orange-600 mt-1">Available for 30-min monthly calls</p>
-                                </div>
-                                <button class="btn-primary">Offer Mentorship</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-between pt-3 border-t border-gray-100">
-                        <div class="flex space-x-6">
-                            <button class="flex items-center space-x-2 text-gray-500 hover:text-red-500">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                                </svg>
-                                <span class="text-sm">23</span>
-                            </button>
-                            <button class="flex items-center space-x-2 text-gray-500 hover:text-blue-500">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                                </svg>
-                                <span class="text-sm">7</span>
-                            </button>
-                            <button class="flex items-center space-x-2 text-gray-500 hover:text-green-500">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
-                                </svg>
-                                <span class="text-sm">Share</span>
-                            </button>
-                        </div>
-                        <button class="text-gray-400 hover:text-gray-600">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Sidebar -->
-            <div class="w-80 p-6">
-                <!-- Learning Progress -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Your Progress</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="stats-card">
-                            <div class="text-2xl font-bold text-blue-600">3</div>
-                            <div class="text-sm text-gray-600">Active Mentors</div>
-                        </div>
-                        <div class="stats-card">
-                            <div class="text-2xl font-bold text-green-600">12</div>
-                            <div class="text-sm text-gray-600">Applications</div>
-                        </div>
-                        <div class="stats-card">
-                            <div class="text-2xl font-bold text-purple-600">45</div>
-                            <div class="text-sm text-gray-600">Connections</div>
-                        </div>
-                        <div class="stats-card">
-                            <div class="text-2xl font-bold text-orange-600">8</div>
-                            <div class="text-sm text-gray-600">Skills Learned</div>
+                        <div class="engagement-item ml-auto">
+                            <i class="fas fa-share"></i>
+                            <span class="font-semibold">Share</span>
                         </div>
                     </div>
                 </div>
-
-                <!-- Recommended Mentors -->
-                <div class="bg-white rounded-16 p-6 border border-gray-200 mb-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Recommended Mentors</h3>
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-3">
-                                <div class="avatar text-xs bg-blue-500">DW</div>
-                                <div>
-                                    <div class="font-medium text-gray-900">David Wilson</div>
-                                    <div class="text-sm text-gray-500">Senior PM at Apple</div>
-                                </div>
-                            </div>
-                            <button class="btn-primary text-sm px-3 py-1">Connect</button>
-                        </div>
-
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-3">
-                                <div class="avatar text-xs bg-green-500">SP</div>
-                                <div>
-                                    <div class="font-medium text-gray-900">Sarah Park</div>
-                                    <div class="text-sm text-gray-500">ML Engineer at Tesla</div>
-                                </div>
-                            </div>
-                            <button class="btn-primary text-sm px-3 py-1">Connect</button>
-                        </div>
-
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-3">
-                                <div class="avatar text-xs bg-purple-500">MR</div>
-                                <div>
-                                    <div class="font-medium text-gray-900">Mike Rodriguez</div>
-                                    <div class="text-sm text-gray-500">Data Scientist at Netflix</div>
-                                </div>
-                            </div>
-                            <button class="btn-primary text-sm px-3 py-1">Connect</button>
-                        </div>
+                {% endfor %}
+                
+                {% if not posts %}
+                <div class="post-card text-center">
+                    <div class="py-12">
+                        <i class="fas fa-newspaper text-4xl text-gray-300 mb-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-600 mb-2">No posts yet</h3>
+                        <p class="text-gray-500">Be the first to share! Students and alumni can post updates, experiences, and opportunities.</p>
                     </div>
                 </div>
-
-                <!-- Upcoming Events -->
-                <div class="bg-white rounded-16 p-6 border border-gray-200 mb-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Upcoming Events</h3>
-                    <div class="space-y-4">
-                        <div class="border-l-4 border-purple-500 pl-4">
-                            <div class="font-medium text-gray-900">Engineering Leadership AMA</div>
-                            <div class="text-sm text-gray-500">Friday, 3:00 PM PST</div>
-                            <div class="text-sm text-purple-600">with Lisa Wang (Stripe VP)</div>
-                        </div>
-
-                        <div class="border-l-4 border-blue-500 pl-4">
-                            <div class="font-medium text-gray-900">Resume Review Workshop</div>
-                            <div class="text-sm text-gray-500">Monday, 6:00 PM PST</div>
-                            <div class="text-sm text-blue-600">Career Services Team</div>
-                        </div>
-
-                        <div class="border-l-4 border-green-500 pl-4">
-                            <div class="font-medium text-gray-900">Mock Interview Session</div>
-                            <div class="text-sm text-gray-500">Wednesday, 4:00 PM PST</div>
-                            <div class="text-sm text-green-600">with Google Engineers</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Hot Topics -->
-                <div class="bg-white rounded-16 p-6 border border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Hot Topics</h3>
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-700">#TechnicalInterviews</span>
-                            <span class="text-sm text-gray-500">89 posts</span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-700">#SummerInternships</span>
-                            <span class="text-sm text-gray-500">67 posts</span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-700">#CareerAdvice</span>
-                            <span class="text-sm text-gray-500">54 posts</span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-700">#DataScience</span>
-                            <span class="text-sm text-gray-500">43 posts</span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-700">#ProductManagement</span>
-                            <span class="text-sm text-gray-500">38 posts</span>
-                        </div>
-                    </div>
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>
+
+    <div class="floating-action">
+        <i class="fas fa-plus"></i>
+    </div>
+
+    <script>
+        // Image preview functionality
+        const imageUpload = document.getElementById('image-upload');
+        const imagePreview = document.getElementById('image-preview');
+
+        imageUpload.addEventListener('change', function(e) {
+            imagePreview.innerHTML = '';
+            const files = Array.from(e.target.files);
+            
+            files.forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'w-16 h-16 object-cover rounded-lg';
+                        imagePreview.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        // Floating action button
+        const floatingAction = document.querySelector('.floating-action');
+        floatingAction.addEventListener('click', function() {
+            // Scroll to post creation form
+            document.querySelector('.post-card').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
 </body>
 </html>

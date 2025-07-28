@@ -6,7 +6,7 @@ class PostServices:
 
     def create_post(self,post):
         res = self.post_repo.create_post(post)
-        return res.data
+        return res
 
     def update_post(self, post, post_id):
         res = self.post_repo.update_post(post, post_id)
@@ -14,7 +14,7 @@ class PostServices:
 
     def reterive_posts(self):
         res = self.post_repo.reterive_posts()
-        return res.data
+        return res
 
     def user_posts(self,user_id):
         res = self.post_repo.user_posts(user_id)
