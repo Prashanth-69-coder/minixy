@@ -22,7 +22,6 @@ class ConversationsRepository:
         return res.data
 
     def get_or_create_conversation(self, sender_id, receiver_id):
-        # Try to find a conversation between these two users (in either direction)
         or_filter = (
             f"and(sender_id.eq.{sender_id},receiver_id.eq.{receiver_id}),"
             f"and(sender_id.eq.{receiver_id},receiver_id.eq.{sender_id})"

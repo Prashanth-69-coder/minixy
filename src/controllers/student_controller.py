@@ -274,16 +274,16 @@ def student_mentor_request_message(request: Request, requester_id: str = Body(..
     mentorship_service = MentorshipService()
     
     # Create or get conversation
-    conversation = conv_service.get_or_create_conversation(requester_id, receiver_id)
+    conversation_id = conv_service.get_or_create_conversation(requester_id, receiver_id)
     
     # Create message
-    message = messages_service.create_message(conversation['id'], requester_id, description)
+    message = messages_service.create_message(conversation_id, requester_id, description)
     
     # Create mentorship request
     mentorship_request = mentorship_service.create_mentor_request(requester_id, receiver_id, description)
     
     return {
-        "conversation": conversation,
+        "conversation_id": conversation_id,
         "message": message,
         "mentorship_request": mentorship_request
     }
