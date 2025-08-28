@@ -483,11 +483,18 @@ async def student_mentor_request_message(request: Request, requester_id: str = B
     try:
         conv_service = ConversationsService()
         messages_service = MessagesService()
-        mentorship_service = MentorshipService()
         
+        # Create conversation and message
         conversation_id = conv_service.get_or_create_conversation(requester_id, receiver_id)
         message = messages_service.create_message(conversation_id, requester_id, description)
-        mentorship_request = mentorship_service.create_mentor_request(requester_id, receiver_id, description)
+        
+        # Try to create mentorship request, but continue even if it fails
+        try:
+            mentorship_service = MentorshipService()
+            mentorship_request = mentorship_service.create_mentor_request(requester_id, receiver_id, description)
+        except Exception as e:
+            print(f"Error creating mentorship request: {e}")
+            mentorship_request = None
         
         return {
             "success": True,

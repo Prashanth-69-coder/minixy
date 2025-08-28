@@ -292,6 +292,13 @@ async def forgot_password_page(request: Request):
         return RedirectResponse(url="/dashboard", status_code=status.HTTP_303_SEE_OTHER)
     return templates.TemplateResponse("forgot_password.html", {"request": request})
 
+@router.get('/reset-password')
+async def reset_password_page(request: Request, token: str = ""):
+    user = await get_current_user(request)
+    if user:
+        return RedirectResponse(url="/dashboard", status_code=status.HTTP_303_SEE_OTHER)
+    return templates.TemplateResponse("reset_password.html", {"request": request, "token": token})
+
 @router.post('/api/forgot-password')
 async def forgot_password_submit(request: Request, email: str = Form(...)):
     try:

@@ -350,7 +350,7 @@
                     <p id="profile-modal-headline" class="text-lg text-gray-600 mb-4"></p>
                     
                     <div class="flex space-x-4 mb-6">
-                        <button class="btn-primary text-white font-semibold py-2 px-6 rounded-lg flex items-center">
+                        <button id="profile-message-btn" class="btn-primary text-white font-semibold py-2 px-6 rounded-lg flex items-center">
                             <i class="fas fa-comments mr-2"></i>Message
                         </button>
                         <button id="profile-request-btn" class="btn-secondary text-blue-600 font-semibold py-2 px-6 rounded-lg border border-blue-200 hover:bg-blue-50 flex items-center">
@@ -535,6 +535,34 @@
             profileRequestBtn.onclick = () => {
                 closeProfileModal();
                 openModal(mentorId, mentorName);
+            };
+            
+            // Set up message button to redirect to messages page
+            const profileMessageBtn = document.getElementById('profile-message-btn');
+            profileMessageBtn.onclick = async () => {
+                try {
+                    // Create or get existing conversation
+                    const response = await fetch('/api/student/mentor-request-message', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            requester_id: "{{ profile.id }}",
+                            receiver_id: mentorId,
+                            description: "Hi, I'd like to start a conversation."
+                        }),
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    // Redirect to messages page
+                    window.location.href = '/student_messages';
+                } catch (error) {
+                    console.error('Error starting conversation:', error);
+                    alert('Failed to start conversation. Please try again.');
+                }
             };
             
             profileModal.classList.add('active');

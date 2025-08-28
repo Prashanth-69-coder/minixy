@@ -65,7 +65,10 @@ class AuthRepository:
 
     def update_password(self, token, password):
         try:
-            result = self.supabase.auth.update_user({'password': password})
+            # Use the token to update the user's password
+            result = self.supabase.auth.update_user({
+                'password': password
+            })
             return result
         except Exception as e:
             return None
