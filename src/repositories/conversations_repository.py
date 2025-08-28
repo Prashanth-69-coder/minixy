@@ -4,16 +4,16 @@ from supabase import create_client
 class ConversationsRepository:
     def __init__(self):
         self.supabase_url = "https://drkvofasyisiqdqxbegu.supabase.co"
-        self.supabase_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRya3ZvZmFzeWlzaXFkcXhiZWd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA3ODY4MTQsImV4cCI6MjA2NjM2MjgxNH0.2psBWqHo8qqFEdg4JimWWEFFWxsX1oHxR5pnOWg-5fI"
+        self.supabase_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRya3ZvZmFzeWlzaXFkcXhiZWd1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MDc4NjgxNCwiZXhwIjoyMDY2MzYyODE0fQ.QinJdPz9s_PSei13oqzgxS6f6yoFmagHEn_svKVvbVg"
         self.supabase = create_client(self.supabase_url,self.supabase_key)
 
-        def create_conversation(conversation):
-            res = self.supabase.table('conversations').insert(conversation).execute()
-            return res.data
+    def create_conversation(self, conversation):
+        res = self.supabase.table('conversations').insert(conversation).execute()
+        return res.data
 
-        def get_conversation(conversation_id):
-            res = self.supabase.table('conversations').select('*').eq('id',conversation_id).execute()
-            return res.data
+    def get_conversation(self, conversation_id):
+        res = self.supabase.table('conversations').select('*').eq('id',conversation_id).execute()
+        return res.data
 
     def get_user_conversations(self, user_id):
         res = self.supabase.table('conversations').select('*').or_(
@@ -36,4 +36,3 @@ class ConversationsRepository:
                 'is_group': False
             }).execute()
             return conv_res.data[0]['id']
-            

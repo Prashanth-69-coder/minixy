@@ -284,7 +284,7 @@
                             {% endif %}
                         </div>
                         <div class="flex space-x-3 mt-auto pt-4 border-t border-gray-100">
-                            <button class="w-full text-sm font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition py-2">View Profile</button>
+                            <button class="view-profile-btn w-full text-sm font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition py-2" data-mentor-id="{{ alumni.id }}" data-mentor-name="{{ alumni.first_name }} {{ alumni.last_name }}" data-mentor-headline="{{ alumni.headline|default('Alumni') }}" data-mentor-bio="{{ alumni.bio|default('No bio available.') }}" data-mentor-skills="{{ alumni.skills|join(',') if alumni.skills else '' }}">View Profile</button>
                             <button class="request-btn w-full btn-primary text-white font-semibold py-2 rounded-lg text-sm">Request</button>
                         </div>
                     </div>
@@ -325,6 +325,59 @@
             </form>
             <div id="success-message" class="hidden mt-4 p-4 bg-green-100 text-green-700 rounded-lg text-sm font-medium">
                 Your request has been sent successfully!
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="modal-overlay fixed inset-0 flex items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <!-- Profile Header -->
+            <div class="relative">
+                <div class="h-32 bg-gradient-to-r from-blue-500 to-purple-600 rounded-t-xl"></div>
+                <button id="close-profile-modal-btn" class="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <div class="absolute -bottom-12 left-6">
+                    <img id="profile-modal-avatar" src="" alt="Profile" class="w-24 h-24 rounded-full border-4 border-white shadow-lg">
+                </div>
+            </div>
+            
+            <!-- Profile Content -->
+            <div class="pt-16 p-6">
+                <div class="mb-6">
+                    <h2 id="profile-modal-name" class="text-2xl font-bold text-gray-900 mb-1"></h2>
+                    <p id="profile-modal-headline" class="text-lg text-gray-600 mb-4"></p>
+                    
+                    <div class="flex space-x-4 mb-6">
+                        <button class="btn-primary text-white font-semibold py-2 px-6 rounded-lg flex items-center">
+                            <i class="fas fa-comments mr-2"></i>Message
+                        </button>
+                        <button id="profile-request-btn" class="btn-secondary text-blue-600 font-semibold py-2 px-6 rounded-lg border border-blue-200 hover:bg-blue-50 flex items-center">
+                            <i class="fas fa-handshake mr-2"></i>Request Mentorship
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- About Section -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">About</h3>
+                    <p id="profile-modal-bio" class="text-gray-700 leading-relaxed"></p>
+                </div>
+                
+                <!-- Skills Section -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Skills & Expertise</h3>
+                    <div id="profile-modal-skills" class="flex flex-wrap gap-2">
+                        <!-- Skills will be populated here -->
+                    </div>
+                </div>
+                
+                <!-- Contact Section -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Connect</h3>
+                    <p class="text-gray-600 text-sm">Interested in connecting? Send a mentorship request or start a conversation!</p>
+                </div>
             </div>
         </div>
     </div>
@@ -425,6 +478,76 @@
                 console.error('Error:', error);
                 alert('Failed to send request. Please try again.');
             }
+        });
+
+        // Add event listeners for view profile buttons
+        document.querySelectorAll('.view-profile-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const btn = e.target;
+                const mentorId = btn.dataset.mentorId;
+                const mentorName = btn.dataset.mentorName;
+                const mentorHeadline = btn.dataset.mentorHeadline;
+                const mentorBio = btn.dataset.mentorBio;
+                const mentorSkills = btn.dataset.mentorSkills;
+                openProfileModal(mentorId, mentorName, mentorHeadline, mentorBio, mentorSkills);
+            });
+        });
+
+        // Profile modal functionality
+        const profileModal = document.getElementById('profile-modal');
+        const closeProfileModalBtn = document.getElementById('close-profile-modal-btn');
+        const profileRequestBtn = document.getElementById('profile-request-btn');
+        
+        const openProfileModal = (mentorId, mentorName, mentorHeadline, mentorBio, mentorSkills) => {
+            // Update profile modal content
+            document.getElementById('profile-modal-name').textContent = mentorName;
+            document.getElementById('profile-modal-headline').textContent = mentorHeadline;
+            document.getElementById('profile-modal-bio').textContent = mentorBio;
+            
+            // Update avatar with initials
+            const nameParts = mentorName.split(' ');
+            const initials = nameParts[0][0] + (nameParts[1] ? nameParts[1][0] : '');
+            document.getElementById('profile-modal-avatar').src = `https://placehold.co/96x96/7c3aed/ffffff?text=${initials}`;
+            
+            // Update skills
+            const skillsContainer = document.getElementById('profile-modal-skills');
+            skillsContainer.innerHTML = '';
+            
+            if (mentorSkills) {
+                const skills = mentorSkills.split(',').filter(skill => skill.trim() !== '');
+                skills.forEach(skill => {
+                    const skillElement = document.createElement('span');
+                    skillElement.className = 'expertise-tag text-xs font-semibold px-3 py-1 rounded-full';
+                    skillElement.textContent = skill.trim();
+                    skillsContainer.appendChild(skillElement);
+                });
+            }
+            
+            // If no skills, show a message
+            if (!mentorSkills || mentorSkills.trim() === '') {
+                const noSkillsElement = document.createElement('span');
+                noSkillsElement.className = 'text-gray-500 text-sm';
+                noSkillsElement.textContent = 'No skills listed';
+                skillsContainer.appendChild(noSkillsElement);
+            }
+            
+            // Set mentor ID for request button
+            profileRequestBtn.onclick = () => {
+                closeProfileModal();
+                openModal(mentorId, mentorName);
+            };
+            
+            profileModal.classList.add('active');
+        };
+
+        const closeProfileModal = () => {
+            profileModal.classList.remove('active');
+        };
+
+        // Profile modal event listeners
+        closeProfileModalBtn.addEventListener('click', closeProfileModal);
+        profileModal.addEventListener('click', (e) => {
+            if (e.target === profileModal) closeProfileModal();
         });
     </script>
 </body>

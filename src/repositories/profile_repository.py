@@ -1,13 +1,23 @@
 from supabase import create_client
+import os
 from dotenv import load_dotenv
 
 class ProfileRepository:
     def __init__(self):
-        supabase_url = "https://drkvofasyisiqdqxbegu.supabase.co"
-        supabase_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRya3ZvZmFzeWlzaXFkcXhiZWd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA3ODY4MTQsImV4cCI6MjA2NjM2MjgxNH0.2psBWqHo8qqFEdg4JimWWEFFWxsX1oHxR5pnOWg-5fI"
+        load_dotenv()
+        supabase_url = os.getenv("SUPABASE_URL")
+        supabase_key = os.getenv("SUPABASE_KEY")
+        
+        if not supabase_url or not supabase_key:
+            raise ValueError("SUPABASE_URL and SUPABASE_KEY must be set in environment variables")
+            
         self.supabase = create_client(supabase_url,supabase_key)
 
     def create_profile(self, profile):
+        res = self.supabase.table('profiles').upsert(profile).execute()
+        return res.data
+
+    def create_user_profile(self, profile):
         res = self.supabase.table('profiles').upsert(profile).execute()
         return res.data
         
@@ -26,15 +36,30 @@ class ProfileRepository:
             result = self.supabase.table('profiles').select('*').eq('role', 'alumni').execute()
         return result.data
 
+    def get_all_students(self, current_user_id=None):
+        if current_user_id:
+            result = self.supabase.table('profiles').select('*').eq('role', 'student').neq('id', current_user_id).execute()
+        else:
+            result = self.supabase.table('profiles').select('*').eq('role', 'student').execute()
+        return result.data
+
+    def get_profiles_batch(self, user_ids):
+        if not user_ids:
+            return {}
+        
+        result = self.supabase.table('profiles').select('*').in_('id', user_ids).execute()
+        return {profile['id']: profile for profile in result.data}
+
+    def update_user_profile(self, profile):
+        try:
+            result = self.supabase.table('profiles').update(profile).eq('id', profile['id']).execute()
+            return result.data[0] if result.data else None
+        except Exception as e:
+            return None
+
     def update_profile(self, profile_data):
-        """Update user profile"""
-        res = self.supabase.table('profiles').update(profile_data).eq('id', profile_data['id']).execute()
-        return res.data
-
-
-
-
-
-
-
-
+        try:
+            res = self.supabase.table('profiles').update(profile_data).eq('id', profile_data['id']).execute()
+            return res.data[0] if res.data else None
+        except Exception as e:
+            return None

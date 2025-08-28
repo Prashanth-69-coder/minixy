@@ -1,0 +1,401 @@
+<!--
+    EMAIL VERIFICATION TEMPLATE - CURRENTLY DISABLED
+    
+    This template is no longer used in the simplified authentication flow.
+    Users now auto-login after signup and go directly to the registration page.
+    
+    Available verification methods in .env:
+    - VERIFICATION_METHOD=disabled (current - no email verification)
+    - VERIFICATION_METHOD=console (development - prints codes to console)
+    - VERIFICATION_METHOD=database (stores codes without sending emails)
+    - VERIFICATION_METHOD=resend (requires domain setup)
+    - VERIFICATION_METHOD=supabase (uses Supabase native verification)
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email - Minixy</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .logo h1 {
+            color: #667eea;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+        .icon {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .icon svg {
+            width: 80px;
+            height: 80px;
+            color: #667eea;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #374151;
+            font-weight: 500;
+        }
+        input[type="text"], input[type="email"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, input[type="email"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .code-input {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        .code-digit {
+            width: 3rem;
+            height: 3rem;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            background: #f9fafb;
+            transition: all 0.3s;
+        }
+        .code-digit:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .verification-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .verification-header h2 {
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        .verification-header p {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-bottom: 1rem;
+        }
+        .btn:hover {
+            background: #5a67d8;
+        }
+        .btn-secondary {
+            background: #6b7280;
+        }
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+        .error {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .success {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .info {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .instructions {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        .resend-section {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+        .resend-text {
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>Minixy</h1>
+            <p>Email Verification</p>
+        </div>
+
+        <div class="icon">
+            <svg fill="currentColor" viewBox="0 0 20 20">
+                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+            </svg>
+        </div>
+
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
+        {% if success %}
+        <div class="success">{{ success }}</div>
+        {% endif %}
+
+        {% if info %}
+        <div class="info">{{ info }}</div>
+        {% endif %}
+
+        {% if token %}
+        <!-- Direct verification with token (legacy support) -->
+        <div class="info">
+            We found a verification token in your link. Click below to verify your email.
+        </div>
+
+        <form method="post" action="/api/verify-email">
+            <input type="hidden" name="token" value="{{ token }}">
+            <button type="submit" class="btn">Verify My Email</button>
+        </form>
+
+        {% elif use_code %}
+        <!-- Verification code input -->
+        <div class="verification-header">
+            <h2>Enter Verification Code</h2>
+            <p>We've sent a 6-digit code to <strong>{{ email }}</strong></p>
+        </div>
+
+        <form method="post" action="/api/verify-code" id="codeForm">
+            <input type="hidden" name="email" value="{{ email }}">
+            <input type="hidden" name="verification_code" id="fullCode">
+            
+            <div class="code-input">
+                <input type="text" class="code-digit" maxlength="1" data-index="0" autocomplete="off">
+                <input type="text" class="code-digit" maxlength="1" data-index="1" autocomplete="off">
+                <input type="text" class="code-digit" maxlength="1" data-index="2" autocomplete="off">
+                <input type="text" class="code-digit" maxlength="1" data-index="3" autocomplete="off">
+                <input type="text" class="code-digit" maxlength="1" data-index="4" autocomplete="off">
+                <input type="text" class="code-digit" maxlength="1" data-index="5" autocomplete="off">
+            </div>
+            
+            <button type="submit" class="btn" id="verifyBtn">Verify Code</button>
+        </form>
+
+        <div class="instructions">
+            <strong>Tips:</strong><br>
+            • Check your spam/junk folder if you don't see the email<br>
+            • The code expires in 24 hours<br>
+            • Make sure to enter all 6 digits
+
+        </div>
+
+        {% if show_resend %}
+        <div class="resend-section">
+            <div class="resend-text">Didn't receive the code?</div>
+            <form method="post" action="/api/resend-verification">
+                <input type="hidden" name="email" value="{{ email }}">
+                <button type="submit" class="btn btn-secondary">Send New Code</button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% elif email and show_resend %}
+        <!-- Show after successful signup (fallback for old flow) -->
+        <div class="instructions">
+            <strong>Almost there!</strong><br>
+            We've sent a verification code to <strong>{{ email }}</strong>. 
+            Please check your inbox for the 6-digit verification code.
+            <br><br>
+            <em>Don't forget to check your spam/junk folder if you don't see the email within a few minutes.</em>
+        </div>
+
+        <div class="resend-section">
+            <div class="resend-text">Didn't receive the code?</div>
+            <form method="post" action="/api/resend-verification">
+                <input type="hidden" name="email" value="{{ email }}">
+                <button type="submit" class="btn btn-secondary">Send New Code</button>
+            </form>
+        </div>
+
+        {% else %}
+        <!-- Manual verification form (fallback) -->
+        <div class="instructions">
+            If you have a verification token from your email, enter it below:
+        </div>
+
+        <form method="post" action="/api/verify-email">
+            <div class="form-group">
+                <label for="token">Verification Token</label>
+                <input type="text" id="token" name="token" required 
+                       placeholder="Enter verification token from email">
+            </div>
+            <button type="submit" class="btn">Verify Email</button>
+        </form>
+
+        <div class="resend-section">
+            <div class="resend-text">Need to resend verification email?</div>
+            <form method="post" action="/api/resend-verification">
+                <div class="form-group">
+                    <input type="email" name="email" required 
+                           placeholder="Enter your email address">
+                </div>
+                <button type="submit" class="btn btn-secondary">Send New Code</button>
+            </form>
+        </div>
+        {% endif %}
+
+        <div class="back-link">
+            <a href="/login">← Back to Login</a>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for code input handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const codeInputs = document.querySelectorAll('.code-digit');
+            const fullCodeInput = document.getElementById('fullCode');
+            const verifyBtn = document.getElementById('verifyBtn');
+            const form = document.getElementById('codeForm');
+
+            if (codeInputs.length > 0) {
+                // Focus first input on load
+                codeInputs[0].focus();
+
+                codeInputs.forEach((input, index) => {
+                    input.addEventListener('input', function(e) {
+                        // Only allow digits
+                        this.value = this.value.replace(/[^0-9]/g, '');
+                        
+                        // Move to next input if current is filled
+                        if (this.value.length === 1 && index < codeInputs.length - 1) {
+                            codeInputs[index + 1].focus();
+                        }
+                        
+                        updateFullCode();
+                    });
+
+                    input.addEventListener('keydown', function(e) {
+                        // Move to previous input on backspace if current is empty
+                        if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                            codeInputs[index - 1].focus();
+                        }
+                        
+                        // Submit form on Enter if all digits filled
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (isCodeComplete()) {
+                                form.submit();
+                            }
+                        }
+                    });
+
+                    input.addEventListener('paste', function(e) {
+                        e.preventDefault();
+                        const paste = (e.clipboardData || window.clipboardData).getData('text');
+                        const digits = paste.replace(/[^0-9]/g, '').split('');
+                        
+                        // Fill inputs with pasted digits
+                        for (let i = 0; i < Math.min(digits.length, codeInputs.length); i++) {
+                            codeInputs[i].value = digits[i];
+                        }
+                        
+                        // Focus the next empty input or the last one
+                        const nextIndex = Math.min(digits.length, codeInputs.length - 1);
+                        codeInputs[nextIndex].focus();
+                        
+                        updateFullCode();
+                    });
+                });
+
+                function updateFullCode() {
+                    const code = Array.from(codeInputs).map(input => input.value).join('');
+                    if (fullCodeInput) {
+                        fullCodeInput.value = code;
+                    }
+                    
+                    // Enable/disable verify button
+                    if (verifyBtn) {
+                        verifyBtn.disabled = !isCodeComplete();
+                        verifyBtn.style.opacity = isCodeComplete() ? '1' : '0.5';
+                    }
+                }
+
+                function isCodeComplete() {
+                    return Array.from(codeInputs).every(input => input.value.length === 1);
+                }
+
+                // Initialize button state
+                updateFullCode();
+            }
+        });
+    </script>
+</body>
+</html>

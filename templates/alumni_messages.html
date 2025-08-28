@@ -178,6 +178,10 @@
                 </div>
                 <div class="conversations-list flex-1 overflow-y-auto" id="conversations-list">
                     <!-- Dynamic Conversation Items will be loaded here -->
+                    <div class="text-center py-8">
+                        <i class="fas fa-spinner fa-spin text-gray-400 text-xl"></i>
+                        <p class="text-gray-500 mt-2">Loading conversations...</p>
+                    </div>
                 </div>
             </div>
 
@@ -235,60 +239,90 @@
             const chatWelcomeView = document.getElementById('chat-welcome');
             const chatView = document.getElementById('chat-view');
 
-            // Fetch and display conversations from your API
-            function fetchConversations() {
-                fetch('/api/conversations')
-                    .then(res => {
-                        if (!res.ok) throw new Error('Network response was not ok');
-                        return res.json();
-                    })
-                    .then(conversations => {
-                        conversationsList.innerHTML = ''; // Clear existing list
-                        conversations.forEach(conv => {
-                            const otherUserName = conv.other_user_name || conv.other_user_email || 'Unknown User';
-                            const nameParts = otherUserName.split(' ');
-                            const initials = (nameParts[0]?.[0] || '') + (nameParts[1]?.[0] || '');
-                            
-                            // Assume the API provides these fields. Gracefully handle if they are missing.
-                            const lastMessage = conv.last_message || 'Click to view messages';
-                            const timestamp = conv.timestamp || '';
-
-                            const item = document.createElement('div');
-                            // This is the improved conversation item UI
-                            item.className = 'conversation-item flex items-center p-4 cursor-pointer hover:bg-gray-100 transition-colors';
-                            item.innerHTML = `
-                                <div class="relative flex-shrink-0">
-                                    <img src="https://placehold.co/48x48/7c3aed/ffffff?text=${initials}" alt="User Avatar" class="w-12 h-12 rounded-full">
-                                    <span class="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-500 border-2 border-white"></span>
-                                </div>
-                                <div class="ml-4 flex-1 overflow-hidden">
-                                    <div class="flex justify-between items-baseline">
-                                        <h4 class="font-semibold text-sm text-gray-800 truncate">${otherUserName}</h4>
-                                        <p class="text-xs text-gray-400 flex-shrink-0 ml-2">${timestamp}</p>
-                                    </div>
-                                    <p class="text-xs text-gray-500 truncate mt-1">${lastMessage}</p>
-                                </div>
-                            `;
-                            
-                            item.onclick = () => loadMessages(conv.id, otherUserName, initials);
-                            conversationsList.appendChild(item);
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error fetching conversations:', error);
-                        conversationsList.innerHTML = '<p class="p-4 text-sm text-red-500">Could not load conversations.</p>';
-                    });
-            }
-
-            // Load messages for a conversation
-            function loadMessages(conversationId, otherUserName, initials) {
+            // Helper function to show chat view
+            function showChatView() {
                 chatWelcomeView.classList.add('hidden');
                 chatView.classList.remove('hidden');
                 chatView.classList.add('flex');
+            }
+
+            // Helper function to show welcome view
+            function showWelcomeView() {
+                chatWelcomeView.classList.remove('hidden');
+                chatView.classList.remove('flex');
+                chatView.classList.add('hidden');
+            }
+
+            async function fetchConversations() {
+                try {
+                    const response = await fetch('/api/alumni/conversations');
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch conversations');
+                    }
+                    const data = await response.json();
+                    const conversations = data.conversations || [];
+
+                    conversationsList.innerHTML = '';
+                    
+                    if (conversations.length === 0) {
+                        conversationsList.innerHTML = `
+                            <div class="text-center py-8">
+                                <i class="fas fa-comments text-gray-300 text-2xl mb-2"></i>
+                                <p class="text-gray-500">No conversations yet</p>
+                                <p class="text-gray-400 text-sm">Start a conversation by requesting mentorship</p>
+                            </div>
+                        `;
+                        showWelcomeView();
+                        return;
+                    }
+
+                    conversations.forEach(conv => {
+                        const otherUserName = conv.other_user_name || conv.other_user_email || 'Unknown User';
+                        const nameParts = otherUserName.split(' ');
+                        const initials = (nameParts[0]?.[0] || '') + (nameParts[1]?.[0] || '');
+
+                        const item = document.createElement('div');
+                        item.className = 'conversation-item flex items-center p-4 cursor-pointer hover:bg-gray-100 transition-colors';
+                        item.innerHTML = `
+                            <div class="relative flex-shrink-0">
+                                <img src="https://placehold.co/48x48/7c3aed/ffffff?text=${initials}" alt="User Avatar" class="w-12 h-12 rounded-full">
+                                <span class="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-500 border-2 border-white"></span>
+                            </div>
+                            <div class="ml-4 flex-1 overflow-hidden">
+                                <div class="flex justify-between items-baseline">
+                                    <h4 class="font-semibold text-sm text-gray-800 truncate">${otherUserName}</h4>
+                                    <p class="text-xs text-gray-400 flex-shrink-0 ml-2">${conv.other_user_email || ''}</p>
+                                </div>
+                                <p class="text-xs text-gray-500 truncate mt-1">Click to view messages</p>
+                            </div>
+                        `;
+                        
+                        item.onclick = () => loadMessages(conv.id, otherUserName, initials, conv.other_user_email);
+                        conversationsList.appendChild(item);
+                    });
+                } catch (error) {
+                    console.error('Error fetching conversations:', error);
+                    conversationsList.innerHTML = `
+                        <div class="text-center py-8">
+                            <i class="fas fa-exclamation-triangle text-red-300 text-2xl mb-2"></i>
+                            <p class="text-gray-500">Error loading conversations</p>
+                            <p class="text-gray-400 text-sm">Please try refreshing the page</p>
+                        </div>
+                    `;
+                    showWelcomeView();
+                }
+            }
+
+            async function loadMessages(conversationId, otherUserName, initials, otherUserEmail) {
+                // Immediately show the chat view when a conversation is selected
+                showChatView();
+                
+                // Update conversation state
                 currentConversationId = conversationId;
                 chatHeader.textContent = otherUserName;
                 chatAvatar.src = `https://placehold.co/40x40/7c3aed/ffffff?text=${initials}`;
                 
+                // Update active conversation highlighting
                 document.querySelectorAll('.conversation-item.active').forEach(el => el.classList.remove('active'));
                 const allConvs = Array.from(conversationsList.children);
                 const activeConvIndex = allConvs.findIndex(child => child.onclick.toString().includes(`'${conversationId}'`));
@@ -296,22 +330,40 @@
                     allConvs[activeConvIndex].classList.add('active');
                 }
 
-                fetch(`/api/messages/${conversationId}`)
-                    .then(res => res.json())
-                    .then(messages => {
-                        messagesList.innerHTML = ''; // Clear previous messages
-                        messages.forEach(msg => {
-                            appendMessage(msg.content, msg.sender_id.toString() === currentUserId.toString() ? 'sent' : 'received');
-                        });
-                        messagesList.scrollTop = messagesList.scrollHeight;
-                    })
-                     .catch(error => {
-                        console.error('Error fetching messages:', error);
-                        messagesList.innerHTML = '<p class="p-4 text-sm text-red-500">Could not load messages.</p>';
+                try {
+                    // Show loading state
+                    messagesList.innerHTML = `
+                        <div class="text-center py-8">
+                            <i class="fas fa-spinner fa-spin text-gray-400 text-xl"></i>
+                            <p class="text-gray-500 mt-2">Loading messages...</p>
+                        </div>
+                    `;
+
+                    // Fetch messages
+                    const response = await fetch(`/api/alumni/messages/${conversationId}`);
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch messages');
+                    }
+                    const data = await response.json();
+                    const messages = data.messages || [];
+
+                    // Display messages
+                    messagesList.innerHTML = '';
+                    messages.forEach(msg => {
+                        appendMessage(msg.content, msg.sender_id.toString() === currentUserId.toString() ? 'sent' : 'received');
                     });
+                    messagesList.scrollTop = messagesList.scrollHeight;
+                } catch (error) {
+                    console.error('Error loading messages:', error);
+                    messagesList.innerHTML = `
+                        <div class="text-center py-8">
+                            <i class="fas fa-exclamation-triangle text-red-300 text-2xl mb-2"></i>
+                            <p class="text-gray-500">Error loading messages</p>
+                        </div>
+                    `;
+                }
             }
 
-            // Helper to add a message bubble to the chat window
             function appendMessage(content, type) {
                 const wrapper = document.createElement('div');
                 wrapper.className = `message-wrapper ${type}`;
@@ -324,24 +376,34 @@
                 messagesList.appendChild(wrapper);
             }
 
-            // Send a new message using your API
-            sendMessageForm.addEventListener('submit', function(e) {
+            sendMessageForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const content = messageInput.value.trim();
                 if (!content || !currentConversationId) return;
 
-                appendMessage(content, 'sent');
-                messagesList.scrollTop = messagesList.scrollHeight;
-                
-                fetch(`/api/messages/${currentConversationId}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ content })
-                }).then(res => {
-                    if (!res.ok) console.error("Failed to send message");
-                });
+                try {
+                    // Immediately show the message in the UI
+                    appendMessage(content, 'sent');
+                    messagesList.scrollTop = messagesList.scrollHeight;
+                    messageInput.value = '';
 
-                messageInput.value = '';
+                    const response = await fetch(`/api/alumni/messages/${currentConversationId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ content: content })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to send message');
+                    }
+
+                    const data = await response.json();
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                    alert('Failed to send message. Please try again.');
+                }
             });
             
             messageInput.addEventListener('keydown', function(e) {
@@ -351,6 +413,7 @@
                 }
             });
 
+            // Initial load
             fetchConversations();
         });
     </script>

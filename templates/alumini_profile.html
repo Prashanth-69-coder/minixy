@@ -217,6 +217,16 @@
                     <label for="modal-headline" class="text-sm font-semibold text-gray-700">Headline</label>
                     <input type="text" id="modal-headline" name="headline" class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all">
                 </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label for="modal-college" class="text-sm font-semibold text-gray-700">College/University</label>
+                        <input type="text" id="modal-college" name="college" class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all">
+                    </div>
+                    <div>
+                        <label for="modal-graduation-year" class="text-sm font-semibold text-gray-700">Graduation Year</label>
+                        <input type="number" id="modal-graduation-year" name="graduation_year" min="1900" max="2099" class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all">
+                    </div>
+                </div>
                 <div>
                     <label for="modal-bio" class="text-sm font-semibold text-gray-700">Bio (About)</label>
                     <textarea id="modal-bio" name="bio" rows="4" class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all"></textarea>
@@ -243,6 +253,8 @@
     {% set bio = profile.bio|default('', true)|e %}
     {% set experience = profile.experience|default('', true)|e %}
     {% set skills_str = profile.skills|join(', ') if profile.skills else '' %}
+    {% set college = profile.college|default('', true)|e %}
+    {% set graduation_year = profile.graduation_year|default('', true) %}
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         const editProfileModal = document.getElementById('editProfileModal');
@@ -258,6 +270,8 @@
             document.getElementById('modal-bio').value = `{{ bio }}`;
             document.getElementById('modal-experience').value = `{{ experience }}`;
             document.getElementById('modal-skills').value = `{{ skills_str }}`;
+            document.getElementById('modal-college').value = `{{ college }}`;
+            document.getElementById('modal-graduation-year').value = `{{ graduation_year }}`;
             editProfileModal.classList.add('active');
         };
 

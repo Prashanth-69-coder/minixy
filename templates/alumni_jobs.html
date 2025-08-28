@@ -46,6 +46,16 @@
             box-shadow: 0 6px 16px rgba(118, 75, 162, 0.3);
         }
 
+        .btn-secondary {
+            background-color: #f3f4f6;
+            color: #4b5563;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e5e7eb;
+        }
+
         /* Job page specific styles */
         .job-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -83,6 +93,13 @@
 
         .modal-overlay.active .modal-content {
             transform: scale(1) translateY(0);
+        }
+
+        /* Tab styles */
+        .tab-active {
+            border-bottom: 2px solid #667eea;
+            color: #667eea;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -146,7 +163,7 @@
                         <p class="text-sm text-gray-500 mt-1">Find your next career opportunity through the alumni network.</p>
                     </div>
                     <div class="flex items-center space-x-3">
-                        <button class="hidden sm:block px-4 py-2 text-sm font-semibold text-indigo-600 bg-indigo-100 rounded-lg hover:bg-indigo-200 transition">My Referrals</button>
+                        <button id="myJobsTab" class="hidden sm:block px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-lg transition">My Referrals</button>
                         <button id="postJobBtn" class="btn-primary text-white font-semibold py-2 px-5 rounded-lg flex items-center">
                             <i class="fas fa-plus mr-2 text-xs"></i>Post a Job
                         </button>
@@ -155,12 +172,20 @@
             </div>
         </header>
 
+        <!-- Tabs -->
+        <div class="px-8 border-b border-gray-200">
+            <div class="flex space-x-8">
+                <button id="allJobsTab" class="tab-active py-4 px-1 text-sm font-medium">All Jobs</button>
+                <button id="myJobsTabMobile" class="py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700">My Referrals</button>
+            </div>
+        </div>
+
         <!-- Page Content -->
         <div class="p-8">
             <!-- Search and Filter Card -->
             <div class="bg-white p-6 rounded-xl border border-gray-200 mb-8">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                    <div class="col-span-1 md:col-span-2">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                    <div class="col-span-1 md:col-span-1">
                         <label for="search" class="text-xs font-semibold text-gray-600">SEARCH JOBS</label>
                         <div class="relative mt-1">
                             <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
@@ -172,7 +197,7 @@
                         <input type="text" id="location" placeholder="e.g. San Francisco" class="w-full mt-1 px-4 py-2.5 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all">
                     </div>
                     <div>
-                        <button class="w-full btn-primary text-white font-semibold py-2.5 rounded-lg">Search</button>
+                        <button id="search-button" class="w-full btn-primary text-white font-semibold py-2.5 rounded-lg">Search</button>
                     </div>
                 </div>
             </div>
@@ -180,6 +205,11 @@
             <!-- Job Listings -->
             <div id="job-listings-container" class="space-y-6">
                 <!-- Job cards will be injected here by JavaScript -->
+            </div>
+
+            <!-- My Jobs Listings (Hidden by default) -->
+            <div id="my-jobs-container" class="hidden space-y-6">
+                <!-- My job cards will be injected here by JavaScript -->
             </div>
         </div>
     </main>
@@ -211,20 +241,15 @@
                     <label for="job-description" class="text-sm font-semibold text-gray-700">Job Description</label>
                     <textarea id="job-description" name="description" rows="4" required class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all"></textarea>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                        <label for="modal-job-type" class="text-sm font-semibold text-gray-700">Job Type</label>
-                        <select id="modal-job-type" name="type" class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all">
-                            <option>Full-time</option>
-                            <option>Part-time</option>
-                            <option>Internship</option>
-                            <option>Contract</option>
-                        </select>
-                    </div>
+                <div class="grid grid-cols-1 md:grid-cols-1 gap-5">
                     <div>
                         <label for="modal-location" class="text-sm font-semibold text-gray-700">Location</label>
                         <input type="text" id="modal-location" name="location" required class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all">
                     </div>
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" id="job-visibility" name="visible" checked class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                    <label for="job-visibility" class="ml-2 block text-sm text-gray-700">Make this job visible to other alumni</label>
                 </div>
                 <div class="flex justify-end space-x-3 pt-4">
                     <button type="button" id="cancelModalBtn" class="px-5 py-2 text-sm font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition">Cancel</button>
@@ -249,7 +274,7 @@
             <form id="apply-job-form" class="space-y-5 mt-6">
                 <div>
                     <label for="apply-message" class="text-sm font-semibold text-gray-700">Message</label>
-                    <textarea id="apply-message" name="message" rows="4" required class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all"></textarea>
+                    <textarea id="apply-message" name="message" rows="4" required class="w-full mt-1 p-3 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all" placeholder="Introduce yourself and explain why you're interested in this position..."></textarea>
                 </div>
                 <div class="flex justify-end space-x-3 pt-4">
                     <button type="button" id="cancelApplyModalBtn" class="px-5 py-2 text-sm font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition">Cancel</button>
@@ -265,55 +290,269 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         const jobListContainer = document.getElementById('job-listings-container');
-        const featuredJobsContainer = document.getElementById('featured-jobs-container');
+        const myJobsContainer = document.getElementById('my-jobs-container');
+        const allJobsTab = document.getElementById('allJobsTab');
+        const myJobsTab = document.getElementById('myJobsTab');
+        const myJobsTabMobile = document.getElementById('myJobsTabMobile');
         const jobModal = document.getElementById('jobModal');
         const postJobBtn = document.getElementById('postJobBtn');
         const closeModalBtn = document.getElementById('closeModalBtn');
         const cancelModalBtn = document.getElementById('cancelModalBtn');
         const postJobForm = document.getElementById('post-job-form');
+        const searchButton = document.getElementById('search-button');
+        const searchInput = document.getElementById('search');
+        const locationInput = document.getElementById('location');
+
+        // Tab switching functionality
+        function showAllJobs() {
+            jobListContainer.classList.remove('hidden');
+            myJobsContainer.classList.add('hidden');
+            allJobsTab.classList.add('tab-active');
+            myJobsTab.classList.remove('tab-active');
+            myJobsTabMobile.classList.remove('tab-active');
+        }
+
+        function showMyJobs() {
+            jobListContainer.classList.add('hidden');
+            myJobsContainer.classList.remove('hidden');
+            allJobsTab.classList.remove('tab-active');
+            myJobsTab.classList.add('tab-active');
+            myJobsTabMobile.classList.add('tab-active');
+            loadMyJobs();
+        }
+
+        allJobsTab.addEventListener('click', showAllJobs);
+        myJobsTab.addEventListener('click', showMyJobs);
+        myJobsTabMobile.addEventListener('click', showMyJobs);
+
+        // Advanced search functionality
+        function performSearch() {
+            const searchTerm = searchInput.value.trim();
+            const locationTerm = locationInput.value.trim();
+            
+            // If no filters are applied, load all jobs
+            if (!searchTerm && !locationTerm) {
+                loadJobs();
+                return;
+            }
+            
+            // Show loading state
+            jobListContainer.innerHTML = `
+                <div class="text-center py-12">
+                    <i class="fas fa-spinner fa-spin text-4xl text-gray-400 mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-900 mb-1">Searching jobs...</h3>
+                    <p class="text-gray-500">Please wait while we find matching opportunities.</p>
+                </div>
+            `;
+            
+            // Build query parameters
+            const params = new URLSearchParams();
+            if (searchTerm) params.append('search', searchTerm);
+            if (locationTerm) params.append('location', locationTerm);
+            
+            // Fetch filtered jobs
+            fetch(`/api/jobs?${params.toString()}`)
+                .then(res => res.json())
+                .then(data => {
+                    renderJobs(jobListContainer, data.jobs, false);
+                })
+                .catch(err => {
+                    console.error('Error searching jobs:', err);
+                    jobListContainer.innerHTML = `
+                        <div class="text-center py-12">
+                            <i class="fas fa-exclamation-triangle text-4xl text-red-300 mb-4"></i>
+                            <h3 class="text-lg font-medium text-gray-900 mb-1">Error searching jobs</h3>
+                            <p class="text-gray-500">Please try again later.</p>
+                        </div>
+                    `;
+                });
+        }
+
+        // Add event listeners for search
+        searchButton.addEventListener('click', performSearch);
+        
+        // Also trigger search on Enter key in search inputs
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch();
+        });
+        
+        locationInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch();
+        });
 
         // Function to render jobs
-        function renderJobs(jobs) {
-            jobListContainer.innerHTML = '';
+        function renderJobs(container, jobs, isMyJobs = false) {
+            container.innerHTML = '';
+            
+            if (jobs.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fas fa-briefcase text-4xl text-gray-300 mb-4"></i>
+                        <h3 class="text-lg font-medium text-gray-900 mb-1">No jobs found</h3>
+                        <p class="text-gray-500">` + (isMyJobs ? 'You haven\'t posted any jobs yet.' : 'There are no jobs matching your search criteria.') + `</p>
+                        ` + (isMyJobs ? '<button id="postFirstJobBtn" class="mt-4 btn-primary text-white font-semibold py-2 px-4 rounded-lg">Post Your First Job</button>' : '') + `
+                    </div>
+                `;
+                
+                if (isMyJobs) {
+                    document.getElementById('postFirstJobBtn')?.addEventListener('click', () => {
+                        jobModal.classList.add('active');
+                    });
+                }
+                return;
+            }
+            
             jobs.forEach(job => {
                 const card = document.createElement('div');
                 card.className = 'job-card bg-white p-6 rounded-xl shadow-sm hover:shadow-lg';
-                card.innerHTML = `
-                    <div class="flex items-center space-x-6">
-                        <img src="https://placehold.co/64x64/000000/FFFFFF?text=${job.company[0] || 'J'}" alt="${job.company} Logo" class="w-16 h-16 rounded-xl">
-                        <div class="flex-1">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <h3 class="font-bold text-xl text-gray-900">${job.title}</h3>
-                                    <p class="text-gray-600 font-medium">${job.company} • ${job.location}</p>
-                                    <p class="text-xs text-gray-500 mt-1">Posted by: <span class="font-semibold">${job.poster_name || job.poster_email || 'Unknown'}</span></p>
+                
+                if (isMyJobs) {
+                    // My jobs view with visibility toggle
+                    card.innerHTML = `
+                        <div class="flex items-center space-x-6">
+                            <img src="https://placehold.co/64x64/000000/FFFFFF?text=${job.company[0] || 'J'}" alt="${job.company} Logo" class="w-16 h-16 rounded-xl">
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-bold text-xl text-gray-900">${job.title}</h3>
+                                        <p class="text-gray-600 font-medium">${job.company} • ${job.location}</p>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-sm ${job.visible ? 'text-green-600' : 'text-gray-500'}">
+                                            ${job.visible ? 'Visible' : 'Hidden'}
+                                        </span>
+                                        <button class="toggle-visibility-btn" data-job-id="${job.id}" data-visible="${job.visible}">
+                                            <i class="fas fa-${job.visible ? 'eye' : 'eye-slash'} text-gray-500 hover:text-indigo-600"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-4 mt-3">
+                                    <span class="job-tag">Full-time</span>
+                                    <span class="text-xs text-gray-500">${new Date(job.created_at || Date.now()).toLocaleDateString()}</span>
                                 </div>
                             </div>
-                            <div class="flex items-center space-x-4 mt-3">
-                                <span class="job-tag">${job.type || 'Full-time'}</span>
-                            </div>
                         </div>
-                        <button class="btn-primary apply-btn" data-job-id="${job.id}">Apply</button>
-                    </div>
-                    <p class="text-gray-700 mt-4">${job.description}</p>
-                `;
-                jobListContainer.appendChild(card);
+                        <p class="text-gray-700 mt-4">${job.description}</p>
+                    `;
+                } else {
+                    // All jobs view with apply button
+                    card.innerHTML = `
+                        <div class="flex items-center space-x-6">
+                            <img src="https://placehold.co/64x64/000000/FFFFFF?text=${job.company[0] || 'J'}" alt="${job.company} Logo" class="w-16 h-16 rounded-xl">
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-bold text-xl text-gray-900">${job.title}</h3>
+                                        <p class="text-gray-600 font-medium">${job.company} • ${job.location}</p>
+                                        <p class="text-xs text-gray-500 mt-1">Posted by: <span class="font-semibold">${job.poster_name || job.poster_email || 'Unknown'}</span></p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-4 mt-3">
+                                    <span class="job-tag">Full-time</span>
+                                </div>
+                            </div>
+                            <button class="btn-primary apply-btn" data-job-id="${job.id}">Apply</button>
+                        </div>
+                        <p class="text-gray-700 mt-4">${job.description}</p>
+                    `;
+                }
+                
+                container.appendChild(card);
             });
-            // Add apply event listeners
-            document.querySelectorAll('.apply-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    openApplyModal(this.dataset.jobId);
+            
+            // Add event listeners
+            if (isMyJobs) {
+                document.querySelectorAll('.toggle-visibility-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const jobId = this.dataset.jobId;
+                        const isVisible = this.dataset.visible === 'true';
+                        toggleJobVisibility(jobId, !isVisible);
+                    });
                 });
-            });
+            } else {
+                document.querySelectorAll('.apply-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        openApplyModal(this.dataset.jobId);
+                    });
+                });
+            }
         }
 
         // Load jobs from backend
         function loadJobs() {
             fetch('/api/jobs')
                 .then(res => res.json())
-                .then(jobs => {
-                    renderJobs(jobs);
+                .then(data => {
+                    renderJobs(jobListContainer, data.jobs, false);
+                })
+                .catch(err => {
+                    console.error('Error loading jobs:', err);
+                    jobListContainer.innerHTML = `
+                        <div class="text-center py-12">
+                            <i class="fas fa-exclamation-triangle text-4xl text-red-300 mb-4"></i>
+                            <h3 class="text-lg font-medium text-gray-900 mb-1">Error loading jobs</h3>
+                            <p class="text-gray-500">Please try again later.</p>
+                        </div>
+                    `;
                 });
+        }
+
+        // Load my jobs from backend
+        function loadMyJobs() {
+            fetch('/api/my-jobs')
+                .then(res => res.json())
+                .then(data => {
+                    renderJobs(myJobsContainer, data.jobs, true);
+                })
+                .catch(err => {
+                    console.error('Error loading my jobs:', err);
+                    myJobsContainer.innerHTML = `
+                        <div class="text-center py-12">
+                            <i class="fas fa-exclamation-triangle text-4xl text-red-300 mb-4"></i>
+                            <h3 class="text-lg font-medium text-gray-900 mb-1">Error loading your jobs</h3>
+                            <p class="text-gray-500">Please try again later.</p>
+                        </div>
+                    `;
+                });
+        }
+
+        // Toggle job visibility
+        function toggleJobVisibility(jobId, visible) {
+            // Show a loading indicator
+            const buttons = document.querySelectorAll(`.toggle-visibility-btn[data-job-id="${jobId}"]`);
+            if (buttons.length > 0) {
+                const originalHTML = buttons[0].innerHTML;
+                buttons[0].innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                buttons[0].disabled = true;
+            }
+            
+            fetch(`/api/jobs/${jobId}/visibility`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ visible: visible })
+            })
+            .then(res => {
+                if (!res.ok) {
+                    return res.json().then(data => {
+                        throw new Error(data.detail || `Error ${res.status}: Failed to update job visibility`);
+                    });
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Reload my jobs to reflect the change
+                    loadMyJobs();
+                } else {
+                    alert('Failed to update job visibility: ' + (data.detail || 'Unknown error'));
+                }
+            })
+            .catch(err => {
+                console.error('Error updating job visibility:', err);
+                alert(`Failed to update job visibility: ${err.message}`);
+                // Restore buttons
+                loadMyJobs();
+            });
         }
 
         // Modal functionality
@@ -333,16 +572,43 @@
         // Handle form submission
         postJobForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            const formData = new FormData(postJobForm);
+            
+            // Show loading state
+            const submitButton = postJobForm.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerHTML;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+            submitButton.disabled = true;
+            
             fetch('/api/jobs', {
                 method: 'POST',
-                body: new FormData(postJobForm)
-            }).then(res => res.json()).then(data => {
+                body: formData
+            }).then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                return res.json();
+            }).then(data => {
                 if (data.success) {
                     closeModal();
-                    loadJobs();
+                    // Refresh the current view
+                    if (myJobsContainer.classList.contains('hidden')) {
+                        loadJobs();
+                    } else {
+                        loadMyJobs();
+                    }
+                    // Show success message
+                    alert('Job posted successfully!');
                 } else {
-                    alert('Failed to post job.');
+                    alert('Failed to post job: ' + (data.detail || 'Unknown error'));
                 }
+            }).catch(err => {
+                console.error('Error posting job:', err);
+                alert('Failed to post job. Please try again.');
+            }).finally(() => {
+                // Restore button state
+                submitButton.innerHTML = originalText;
+                submitButton.disabled = false;
             });
         });
 
@@ -378,7 +644,7 @@
             fetch(`/api/jobs/${currentApplyJobId}/apply`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(message)
+                body: JSON.stringify({message: message})
             })
             .then(res => res.json())
             .then(data => {
@@ -388,6 +654,10 @@
                 } else {
                     alert('Failed to send application.');
                 }
+            })
+            .catch(err => {
+                console.error('Error applying for job:', err);
+                alert('Failed to send application.');
             });
         });
 

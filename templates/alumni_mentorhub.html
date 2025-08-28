@@ -46,6 +46,13 @@
         .btn-secondary:hover {
             background-color: #e0e7ff;
         }
+        .btn-secondary {
+            background-color: #eef2ff;
+            color: #4f46e5;
+        }
+        .btn-secondary:hover {
+            background-color: #e0e7ff;
+        }
 
         /* Mentorship Hub Specific Styles */
         .mentor-card {
@@ -132,53 +139,169 @@
 
         <!-- Page Content -->
         <div class="p-8">
-            <!-- Search and Filters -->
-            <div class="bg-white p-6 rounded-xl border border-gray-200 mb-8">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                    <div class="col-span-1 md:col-span-2">
-                        <label for="search" class="text-xs font-semibold text-gray-600">SEARCH MENTORS</label>
-                        <div class="relative mt-1">
-                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                            <input type="text" id="search" placeholder="Name, company, or skill" class="w-full pl-11 pr-4 py-2.5 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all">
+            <!-- Mentorship Statistics -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-xl border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Pending Requests</p>
+                            <p class="text-2xl font-bold text-orange-600" id="pending-count">0</p>
+                        </div>
+                        <div class="p-3 bg-orange-100 rounded-full">
+                            <i class="fas fa-clock text-orange-600"></i>
                         </div>
                     </div>
-                    <div>
-                        <label for="expertise" class="text-xs font-semibold text-gray-600">EXPERTISE</label>
-                        <select id="expertise" class="w-full mt-1 px-4 py-2.5 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all appearance-none">
-                            <option>All Expertise</option><option>Software Engineering</option><option>Product Management</option>
-                        </select>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Active Mentorships</p>
+                            <p class="text-2xl font-bold text-green-600" id="active-count">0</p>
+                        </div>
+                        <div class="p-3 bg-green-100 rounded-full">
+                            <i class="fas fa-users text-green-600"></i>
+                        </div>
                     </div>
-                    <div>
-                        <button class="w-full btn-primary text-white font-semibold py-2.5 rounded-lg">Search</button>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Total Requests</p>
+                            <p class="text-2xl font-bold text-blue-600" id="total-count">0</p>
+                        </div>
+                        <div class="p-3 bg-blue-100 rounded-full">
+                            <i class="fas fa-envelope text-blue-600"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Mentor Status</p>
+                            <p class="text-sm font-bold" id="status-text">Available</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="availability-toggle" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
                     </div>
                 </div>
             </div>
 
-            <!-- Mentor Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {% for alumni in alumni_list %}
-                <div class="mentor-card bg-white p-6 rounded-xl shadow-sm flex flex-col" data-mentor-id="{{ alumni.id }}" data-mentor-name="{{ alumni.first_name }} {{ alumni.last_name }}">
-                    <div class="flex items-center mb-4">
-                        <img src="https://placehold.co/56x56/7c3aed/ffffff?text={{ alumni.first_name[0]|default('A') }}{{ alumni.last_name[0]|default('') }}" alt="Avatar" class="w-14 h-14 rounded-full flex-shrink-0">
-                        <div class="ml-4">
-                            <h3 class="font-bold text-gray-900">{{ alumni.first_name }} {{ alumni.last_name }}</h3>
-                            <p class="text-sm text-gray-600">{{ alumni.headline|default('Alumni') }}</p>
+            <!-- Tab Navigation -->
+            <div class="mb-8">
+                <div class="border-b border-gray-200">
+                    <nav class="-mb-px flex space-x-8">
+                        <button class="tab-btn active border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm" data-tab="pending-requests">
+                            Pending Requests
+                        </button>
+                        <button class="tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm" data-tab="discover-mentors">
+                            Discover Mentors
+                        </button>
+                        <button class="tab-btn border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm" data-tab="my-mentorships">
+                            My Mentorships
+                        </button>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Pending Requests Tab -->
+            <div id="pending-requests" class="tab-content">
+                <div class="bg-white rounded-xl border border-gray-200">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Mentorship Requests</h3>
+                        <p class="text-sm text-gray-500">Review and respond to incoming mentorship requests</p>
+                    </div>
+                    <div id="requests-container" class="divide-y divide-gray-200">
+                        <!-- Requests will be loaded here -->
+                        <div class="p-8 text-center">
+                            <i class="fas fa-inbox text-4xl text-gray-300 mb-4"></i>
+                            <p class="text-gray-500">Loading requests...</p>
                         </div>
                     </div>
-                    <p class="text-sm text-gray-600 leading-relaxed flex-grow">{{ alumni.bio|truncate(120, True) if alumni.bio else 'No bio available.' }}</p>
-                    <div class="flex flex-wrap gap-2 my-4">
-                        {% if alumni.skills %}
-                            {% for skill in alumni.skills[:3] %}
-                                <span class="expertise-tag text-xs font-semibold px-3 py-1 rounded-full">{{ skill }}</span>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                    <div class="flex space-x-3 mt-auto pt-4 border-t border-gray-100">
-                        <button class="w-full text-sm font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition py-2">View Profile</button>
-                        <button class="request-btn w-full btn-primary text-white font-semibold py-2 rounded-lg text-sm">Request</button>
+                </div>
+            </div>
+
+            <!-- Discover Mentors Tab -->
+            <div id="discover-mentors" class="tab-content hidden">
+                <!-- Search and Filters -->
+                <div class="bg-white p-6 rounded-xl border border-gray-200 mb-8">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                        <div class="col-span-1 md:col-span-2">
+                            <label for="search" class="text-xs font-semibold text-gray-600">SEARCH MENTORS</label>
+                            <div class="relative mt-1">
+                                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                <input type="text" id="search" placeholder="Name, company, or skill" class="w-full pl-11 pr-4 py-2.5 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="expertise" class="text-xs font-semibold text-gray-600">EXPERTISE</label>
+                            <select id="expertise" class="w-full mt-1 px-4 py-2.5 bg-gray-100 border-2 border-transparent focus:border-indigo-400 focus:bg-white focus:ring-0 rounded-lg transition-all appearance-none">
+                                <option>All Expertise</option>
+                                <option>Software Engineering</option>
+                                <option>Product Management</option>
+                                <option>Data Science</option>
+                                <option>Design</option>
+                                <option>Marketing</option>
+                                <option>Finance</option>
+                                <option>Operations</option>
+                            </select>
+                        </div>
+                        <div>
+                            <button id="search-btn" class="w-full btn-primary text-white font-semibold py-2.5 rounded-lg">Search</button>
+                        </div>
                     </div>
                 </div>
-                {% endfor %}
+
+                <!-- Mentor Grid -->
+                <div id="mentors-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% if alumni_list %}
+                    {% for alumni in alumni_list %}
+                    <div class="mentor-card bg-white p-6 rounded-xl shadow-sm flex flex-col" data-mentor-id="{{ alumni.id }}" data-mentor-name="{{ alumni.first_name }} {{ alumni.last_name }}">
+                        <div class="flex items-center mb-4">
+                            <img src="https://placehold.co/56x56/7c3aed/ffffff?text={{ alumni.first_name[0]|default('A') }}{{ alumni.last_name[0]|default('') }}" alt="Avatar" class="w-14 h-14 rounded-full flex-shrink-0">
+                            <div class="ml-4">
+                                <h3 class="font-bold text-gray-900">{{ alumni.first_name }} {{ alumni.last_name }}</h3>
+                                <p class="text-sm text-gray-600">{{ alumni.headline|default('Alumni') }}</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 leading-relaxed flex-grow">{{ alumni.bio|truncate(120, True) if alumni.bio else 'No bio available.' }}</p>
+                        <div class="flex flex-wrap gap-2 my-4">
+                            {% if alumni.skills %}
+                                {% for skill in alumni.skills[:3] %}
+                                    <span class="expertise-tag text-xs font-semibold px-3 py-1 rounded-full">{{ skill }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="flex space-x-3 mt-auto pt-4 border-t border-gray-100">
+                            <button class="view-profile-btn w-full text-sm font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition py-2" data-mentor-id="{{ alumni.id }}" data-mentor-name="{{ alumni.first_name }} {{ alumni.last_name }}" data-mentor-headline="{{ alumni.headline|default('Alumni') }}" data-mentor-bio="{{ alumni.bio|default('No bio available.') }}" data-mentor-skills="{{ alumni.skills|join(',') if alumni.skills else '' }}">View Profile</button>
+                            <button class="request-btn w-full btn-primary text-white font-semibold py-2 rounded-lg text-sm">Request</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="col-span-full text-center py-12">
+                        <i class="fas fa-user-friends text-4xl text-gray-300 mb-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-600 mb-2">No mentors available</h3>
+                        <p class="text-gray-500">There are currently no alumni offering mentorship. Check back later or consider offering mentorship yourself!</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- My Mentorships Tab -->
+            <div id="my-mentorships" class="tab-content hidden">
+                <div class="bg-white rounded-xl border border-gray-200">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Active Mentorships</h3>
+                        <p class="text-sm text-gray-500">Manage your ongoing mentorship relationships</p>
+                    </div>
+                    <div class="p-8 text-center">
+                        <i class="fas fa-users text-4xl text-gray-300 mb-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-600 mb-2">No active mentorships</h3>
+                        <p class="text-gray-500">Accept mentorship requests to start building meaningful connections.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -212,8 +335,62 @@
         </div>
     </div>
 
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="modal-overlay fixed inset-0 flex items-center justify-center p-4">
+        <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <!-- Profile Header -->
+            <div class="relative">
+                <div class="h-32 bg-gradient-to-r from-blue-500 to-purple-600 rounded-t-xl"></div>
+                <button id="close-profile-modal-btn" class="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <div class="absolute -bottom-12 left-6">
+                    <img id="profile-modal-avatar" src="" alt="Profile" class="w-24 h-24 rounded-full border-4 border-white shadow-lg">
+                </div>
+            </div>
+            
+            <!-- Profile Content -->
+            <div class="pt-16 p-6">
+                <div class="mb-6">
+                    <h2 id="profile-modal-name" class="text-2xl font-bold text-gray-900 mb-1"></h2>
+                    <p id="profile-modal-headline" class="text-lg text-gray-600 mb-4"></p>
+                    
+                    <div class="flex space-x-4 mb-6">
+                        <button class="btn-primary text-white font-semibold py-2 px-6 rounded-lg flex items-center">
+                            <i class="fas fa-comments mr-2"></i>Message
+                        </button>
+                        <button id="profile-request-btn" class="btn-secondary text-blue-600 font-semibold py-2 px-6 rounded-lg border border-blue-200 hover:bg-blue-50 flex items-center">
+                            <i class="fas fa-handshake mr-2"></i>Request Mentorship
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- About Section -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">About</h3>
+                    <p id="profile-modal-bio" class="text-gray-700 leading-relaxed"></p>
+                </div>
+                
+                <!-- Skills Section -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Skills & Expertise</h3>
+                    <div id="profile-modal-skills" class="flex flex-wrap gap-2">
+                        <!-- Skills will be populated here -->
+                    </div>
+                </div>
+                
+                <!-- Contact Section -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Connect</h3>
+                    <p class="text-gray-600 text-sm">Interested in connecting? Send a mentorship request or start a conversation!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // Modal elements
         const modal = document.getElementById('request-modal');
         const closeModalBtn = document.getElementById('close-modal-btn');
         const cancelBtn = document.getElementById('cancel-btn');
@@ -222,6 +399,357 @@
         const receiverIdInput = document.getElementById('receiver-id-input');
         const successMessage = document.getElementById('success-message');
 
+        // Tab elements
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        // Statistics elements
+        const pendingCountEl = document.getElementById('pending-count');
+        const activeCountEl = document.getElementById('active-count');
+        const totalCountEl = document.getElementById('total-count');
+        const statusTextEl = document.getElementById('status-text');
+        const pendingBadgeEl = document.getElementById('pending-badge');
+        const availabilityToggle = document.getElementById('availability-toggle');
+
+        // Search elements
+        const searchInput = document.getElementById('search');
+        const expertiseSelect = document.getElementById('expertise');
+        const searchBtn = document.getElementById('search-btn');
+        const mentorsGrid = document.getElementById('mentors-grid');
+        const requestsContainer = document.getElementById('requests-container');
+
+        // Initialize
+        loadStatistics();
+        loadMentorRequests();
+        setActiveTab('pending-requests');
+
+        // Tab navigation
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.dataset.tab;
+                setActiveTab(tabId);
+            });
+        });
+
+        function setActiveTab(tabId) {
+            tabBtns.forEach(btn => {
+                btn.classList.remove('active', 'border-indigo-500', 'text-indigo-600');
+                btn.classList.add('border-transparent', 'text-gray-500');
+            });
+            tabContents.forEach(content => content.classList.add('hidden'));
+
+            const activeBtn = document.querySelector(`[data-tab="${tabId}"]`);
+            const activeContent = document.getElementById(tabId);
+            
+            if (activeBtn && activeContent) {
+                activeBtn.classList.add('active', 'border-indigo-500', 'text-indigo-600');
+                activeBtn.classList.remove('border-transparent', 'text-gray-500');
+                activeContent.classList.remove('hidden');
+            }
+        }
+
+        // Availability toggle
+        availabilityToggle.addEventListener('change', async () => {
+            const isAvailable = availabilityToggle.checked;
+            try {
+                const response = await fetch('/api/mentorship/availability', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ available: isAvailable })
+                });
+                
+                if (response.ok) {
+                    statusTextEl.textContent = isAvailable ? 'Available' : 'Unavailable';
+                    statusTextEl.className = `text-sm font-bold ${isAvailable ? 'text-green-600' : 'text-red-600'}`;
+                } else {
+                    availabilityToggle.checked = !isAvailable; // Revert on error
+                    alert('Failed to update availability status');
+                }
+            } catch (error) {
+                console.error('Error updating availability:', error);
+                availabilityToggle.checked = !isAvailable;
+                alert('Failed to update availability status');
+            }
+        });
+
+        // Load statistics
+        async function loadStatistics() {
+            try {
+                const response = await fetch('/api/mentorship/statistics');
+                if (response.ok) {
+                    const data = await response.json();
+                    const stats = data.statistics;
+                    
+                    pendingCountEl.textContent = stats.pending_requests;
+                    activeCountEl.textContent = stats.active_mentorships;
+                    totalCountEl.textContent = stats.total_requests;
+                }
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+            }
+        }
+
+        // Load mentor requests
+        async function loadMentorRequests() {
+            try {
+                const response = await fetch('/api/mentorship/requests');
+                if (response.ok) {
+                    const data = await response.json();
+                    displayMentorRequests(data.requests);
+                }
+            } catch (error) {
+                console.error('Error loading requests:', error);
+                requestsContainer.innerHTML = `
+                    <div class="p-8 text-center">
+                        <i class="fas fa-exclamation-triangle text-4xl text-red-300 mb-4"></i>
+                        <p class="text-red-500">Failed to load requests</p>
+                    </div>`;
+            }
+        }
+
+        // Display mentor requests
+        function displayMentorRequests(requests) {
+            if (requests.length === 0) {
+                requestsContainer.innerHTML = `
+                    <div class="p-8 text-center">
+                        <i class="fas fa-inbox text-4xl text-gray-300 mb-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-600 mb-2">No pending requests</h3>
+                        <p class="text-gray-500">You're all caught up! New mentorship requests will appear here.</p>
+                    </div>`;
+                return;
+            }
+
+            requestsContainer.innerHTML = requests.map(request => `
+                <div class="p-6" data-request-id="${request.id}">
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-start space-x-4">
+                            <img src="https://placehold.co/48x48/7c3aed/ffffff?text=${request.requester_profile.first_name[0]}${request.requester_profile.last_name[0] || ''}" 
+                                 alt="Avatar" class="w-12 h-12 rounded-full flex-shrink-0">
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2">
+                                    <h4 class="font-semibold text-gray-900">${request.requester_profile.first_name} ${request.requester_profile.last_name}</h4>
+                                    <span class="text-sm text-gray-500">${request.requester_profile.headline || 'Student'}</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-1">${formatDate(request.created_at)}</p>
+                                <p class="text-gray-700 mt-3 leading-relaxed">${request.description}</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2 ml-4">
+                            <button onclick="handleAcceptRequest('${request.id}')" 
+                                    class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition">
+                                Accept
+                            </button>
+                            <button onclick="handleRejectRequest('${request.id}')" 
+                                    class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition">
+                                Decline
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Handle accept request
+        window.handleAcceptRequest = async (requestId) => {
+            if (!confirm('Accept this mentorship request?')) return;
+            
+            try {
+                const response = await fetch(`/api/mentorship/requests/${requestId}/accept`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    document.querySelector(`[data-request-id="${requestId}"]`).remove();
+                    loadStatistics();
+                    showNotification('Mentorship request accepted!', 'success');
+                } else {
+                    showNotification('Failed to accept request', 'error');
+                }
+            } catch (error) {
+                console.error('Error accepting request:', error);
+                showNotification('Failed to accept request', 'error');
+            }
+        };
+
+        // Handle reject request
+        window.handleRejectRequest = async (requestId) => {
+            if (!confirm('Decline this mentorship request?')) return;
+            
+            try {
+                const response = await fetch(`/api/mentorship/requests/${requestId}/reject`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    document.querySelector(`[data-request-id="${requestId}"]`).remove();
+                    loadStatistics();
+                    showNotification('Request declined', 'info');
+                } else {
+                    showNotification('Failed to decline request', 'error');
+                }
+            } catch (error) {
+                console.error('Error rejecting request:', error);
+                showNotification('Failed to decline request', 'error');
+            }
+        };
+
+        // Search functionality
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch();
+        });
+
+        async function performSearch() {
+            const searchQuery = searchInput.value.trim();
+            const expertise = expertiseSelect.value === 'All Expertise' ? null : expertiseSelect.value;
+            
+            try {
+                const params = new URLSearchParams();
+                if (searchQuery) params.append('search', searchQuery);
+                if (expertise) params.append('expertise', expertise);
+                
+                const response = await fetch(`/api/mentorship/available-mentors?${params}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    displaySearchResults(data.mentors);
+                }
+            } catch (error) {
+                console.error('Error searching mentors:', error);
+            }
+        }
+
+        function displaySearchResults(mentors) {
+            if (mentors.length === 0) {
+                mentorsGrid.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <i class="fas fa-search text-4xl text-gray-300 mb-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-600 mb-2">No mentors found</h3>
+                        <p class="text-gray-500">Try adjusting your search criteria.</p>
+                    </div>`;
+                return;
+            }
+
+            mentorsGrid.innerHTML = mentors.map(mentor => `
+                <div class="mentor-card bg-white p-6 rounded-xl shadow-sm flex flex-col" 
+                     data-mentor-id="${mentor.user_id}" 
+                     data-mentor-name="${mentor.first_name} ${mentor.last_name}">
+                    <div class="flex items-center mb-4">
+                        <img src="https://placehold.co/56x56/7c3aed/ffffff?text=${mentor.first_name[0]}${mentor.last_name[0] || ''}" 
+                             alt="Avatar" class="w-14 h-14 rounded-full flex-shrink-0">
+                        <div class="ml-4">
+                            <h3 class="font-bold text-gray-900">${mentor.first_name} ${mentor.last_name}</h3>
+                            <p class="text-sm text-gray-600">${mentor.headline || 'Alumni'}</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 leading-relaxed flex-grow">
+                        ${mentor.bio ? (mentor.bio.length > 120 ? mentor.bio.substring(0, 120) + '...' : mentor.bio) : 'No bio available.'}
+                    </p>
+                    <div class="flex flex-wrap gap-2 my-4">
+                        ${(mentor.skills || []).slice(0, 3).map(skill => 
+                            `<span class="expertise-tag text-xs font-semibold px-3 py-1 rounded-full">${skill}</span>`
+                        ).join('')}
+                    </div>
+                    <div class="flex space-x-3 mt-auto pt-4 border-t border-gray-100">
+                        <button class="view-profile-btn w-full text-sm font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition py-2">View Profile</button>
+                        <button class="request-btn w-full btn-primary text-white font-semibold py-2 rounded-lg text-sm">Request</button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Re-attach event listeners for new request buttons
+            document.querySelectorAll('.request-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const card = e.target.closest('.mentor-card');
+                    const mentorId = card.dataset.mentorId;
+                    const mentorName = card.dataset.mentorName;
+                    openModal(mentorId, mentorName);
+                });
+            });
+                
+            // Re-attach event listeners for new profile buttons
+            document.querySelectorAll('.view-profile-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const card = e.target.closest('.mentor-card');
+                    if (card) {
+                        // For dynamically loaded cards
+                        const mentorId = card.dataset.mentorId;
+                        const mentorName = card.dataset.mentorName;
+                        const mentorHeadline = card.dataset.mentorHeadline;
+                        const mentorBio = card.dataset.mentorBio;
+                        const mentorSkills = card.dataset.mentorSkills;
+                        openProfileModal(mentorId, mentorName, mentorHeadline, mentorBio, mentorSkills);
+                    } else {
+                        // For static cards
+                        const btn = e.target;
+                        const mentorId = btn.dataset.mentorId;
+                        const mentorName = btn.dataset.mentorName;
+                        const mentorHeadline = btn.dataset.mentorHeadline;
+                        const mentorBio = btn.dataset.mentorBio;
+                        const mentorSkills = btn.dataset.mentorSkills;
+                        openProfileModal(mentorId, mentorName, mentorHeadline, mentorBio, mentorSkills);
+                    }
+                });
+            });
+        }
+        
+        // Profile modal functions
+        const profileModal = document.getElementById('profile-modal');
+        const closeProfileModalBtn = document.getElementById('close-profile-modal-btn');
+        const profileRequestBtn = document.getElementById('profile-request-btn');
+            
+        const openProfileModal = (mentorId, mentorName, mentorHeadline, mentorBio, mentorSkills) => {
+            // Update profile modal content
+            document.getElementById('profile-modal-name').textContent = mentorName;
+            document.getElementById('profile-modal-headline').textContent = mentorHeadline;
+            document.getElementById('profile-modal-bio').textContent = mentorBio;
+                
+            // Update avatar with initials
+            const nameParts = mentorName.split(' ');
+            const initials = nameParts[0][0] + (nameParts[1] ? nameParts[1][0] : '');
+            document.getElementById('profile-modal-avatar').src = `https://placehold.co/96x96/7c3aed/ffffff?text=${initials}`;
+                
+            // Update skills
+            const skillsContainer = document.getElementById('profile-modal-skills');
+            skillsContainer.innerHTML = '';
+                
+            if (mentorSkills) {
+                const skills = mentorSkills.split(',').filter(skill => skill.trim() !== '');
+                skills.forEach(skill => {
+                    const skillElement = document.createElement('span');
+                    skillElement.className = 'expertise-tag text-xs font-semibold px-3 py-1 rounded-full';
+                    skillElement.textContent = skill.trim();
+                    skillsContainer.appendChild(skillElement);
+                });
+            }
+                
+            // If no skills, show a message
+            if (!mentorSkills || mentorSkills.trim() === '') {
+                const noSkillsElement = document.createElement('span');
+                noSkillsElement.className = 'text-gray-500 text-sm';
+                noSkillsElement.textContent = 'No skills listed';
+                skillsContainer.appendChild(noSkillsElement);
+            }
+                
+            // Set mentor ID for request button
+            profileRequestBtn.onclick = () => {
+                closeProfileModal();
+                openModal(mentorId, mentorName);
+            };
+                
+            profileModal.classList.add('active');
+        };
+        
+        const closeProfileModal = () => {
+            profileModal.classList.remove('active');
+        };
+        
+        // Profile modal event listeners
+        closeProfileModalBtn.addEventListener('click', closeProfileModal);
+        profileModal.addEventListener('click', (e) => {
+            if (e.target === profileModal) closeProfileModal();
+        });
+
+        // Modal functions
         const openModal = (mentorId, mentorName) => {
             mentorNameModal.textContent = mentorName;
             receiverIdInput.value = mentorId;
@@ -234,6 +762,7 @@
             successMessage.classList.add('hidden');
         };
 
+        // Modal event listeners
         document.querySelectorAll('.request-btn').forEach(button => {
             button.addEventListener('click', (e) => {
                 const card = e.target.closest('.mentor-card');
@@ -246,11 +775,10 @@
         closeModalBtn.addEventListener('click', closeModal);
         cancelBtn.addEventListener('click', closeModal);
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeModal();
-            }
+            if (e.target === modal) closeModal();
         });
 
+        // Request form submission
         requestForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(requestForm);
@@ -274,12 +802,34 @@
                 const result = await response.json();
                 successMessage.classList.remove('hidden');
                 setTimeout(closeModal, 2000);
+                loadStatistics();
 
             } catch (error) {
                 console.error('Error:', error);
                 alert('Failed to send request. Please try again.');
             }
         });
+
+        // Utility functions
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg text-white ${type === 'success' ? 'bg-green-600' : type === 'error' ? 'bg-red-600' : 'bg-blue-600'}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
     });
     </script>
 </body>

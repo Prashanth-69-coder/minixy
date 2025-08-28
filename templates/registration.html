@@ -265,6 +265,37 @@
             margin-bottom: 24px;
         }
 
+        .verification-notice {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .verification-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .verification-badge i {
+            font-size: 16px;
+        }
+
+        .verification-text {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0;
+            font-size: 14px;
+        }
+
         .form-group {
             position: relative;
         }
@@ -509,6 +540,21 @@
             {% endif %}
 
             <form id="registrationForm" name="createProfileForm" action="/api/create/profile" method="post" class="registration-form">
+                {% if verified_email %}
+                <!-- Hidden fields for verified email users -->
+                <input type="hidden" name="verified_email" value="{{ verified_email }}">
+                {% if verification_session_id %}
+                <input type="hidden" name="verification_session_id" value="{{ verification_session_id }}">
+                {% endif %}
+                
+                <div class="verification-notice">
+                    <div class="verification-badge">
+                        <i class="fas fa-check-circle"></i>
+                        Email Verified: {{ verified_email }}
+                    </div>
+                    <p class="verification-text">Your email has been verified. Complete your profile to get started!</p>
+                </div>
+                {% endif %}
                 <div class="form-group">
                     <label for="first_name">First Name <span class="required">*</span></label>
                     <input type="text" id="first_name" name="first_name" required value="" placeholder="Enter your first name">

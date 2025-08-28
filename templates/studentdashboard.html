@@ -158,6 +158,53 @@
             transform: translateY(-2px);
         }
 
+        .engagement-item.like-btn[data-liked="true"] {
+            color: #3b82f6;
+        }
+
+        .engagement-item.like-btn[data-liked="true"]:hover {
+            color: #1d4ed8;
+        }
+
+        .comments-section {
+            margin-top: 16px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 16px;
+        }
+
+        .comment-item {
+            margin-bottom: 12px;
+        }
+
+        .comment-form {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -315,7 +362,15 @@
             font-weight: 700;
             box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
         }
-        
+
+        .content-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
         .floating-action {
             position: fixed;
             bottom: 32px;
@@ -343,9 +398,23 @@
         .rounded-20 {
             border-radius: 20px;
         }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
-<body>
+<body data-lazy-load="{% if lazy_load %}true{% else %}false{% endif %}">
     <div class="sidebar">
         <div class="p-6">
             <div class="flex items-center space-x-3 mb-8">
@@ -366,23 +435,16 @@
             <a href="{{ url_for('student_mentorhub') }}" class="nav-item">
                 <i class="fas fa-handshake w-6 text-center"></i>
                 Find a Mentor
-                <span class="notification-badge">5</span>
             </a>
 
             <a href="{{ url_for('student_jobs') }}" class="nav-item">
                 <i class="fas fa-briefcase w-6 text-center"></i>
                 Job Opportunities
-                <span class="notification-badge">8</span>
             </a>
 
             <a href="{{ url_for('student_messages') }}" class="nav-item">
                 <i class="fas fa-envelope w-6 text-center"></i>
                 Messages
-            </a>
-
-            <a href="#" class="nav-item">
-                <i class="fas fa-chart-line w-6 text-center"></i>
-                Analytics
             </a>
 
             <a href="{{ url_for('student_profile') }}" class="nav-item">
@@ -397,13 +459,11 @@
                 <div>
                     <div class="font-bold text-lg">{{ profile.first_name if profile else 'Student' }} {{ profile.last_name if profile else '' }}</div>
                     <div class="text-sm opacity-90">{{ profile.headline if profile and profile.headline else 'Student' }}</div>
-                    <div class="text-xs opacity-75">{{ profile.role if profile else 'Student' }}</div>
+                    <div class="text-xs opacity-75">{{ profile.college if profile and profile.college }}{{ ' \'' + profile.graduation_year|string if profile and profile.graduation_year else '' }}</div>
                 </div>
             </div>
             <div class="quick-actions">
-                <button class="quick-action-btn">Edit Profile</button>
-                <button class="quick-action-btn">Settings</button>
-                <button class="quick-action-btn">Help Center</button>
+                <a href="{{ url_for('student_profile') }}" class="quick-action-btn">Edit Profile</a>
                 <a href="/logout" class="quick-action-btn w-full text-center">Sign Out</a>
             </div>
         </div>
@@ -416,9 +476,29 @@
                     <div class="flex items-center space-x-4">
                         <h1 class="text-3xl font-bold text-white">Community Feed</h1>
                         <div class="flex space-x-2">
-                            <span class="newest-tag">NEWEST</span>
-                            <span class="trending-tag">TRENDING</span>
+                            <button class="filter-btn {% if current_filter == 'newest' %}active{% endif %}" data-filter="newest">NEWEST</button>
+                            <button class="filter-btn {% if current_filter == 'trending' %}active{% endif %}" data-filter="trending">TRENDING</button>
                         </div>
+                    </div>
+                    
+                    <!-- Search and Filter Section -->
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <input type="text" id="search-input" placeholder="Search posts..." 
+                                   value="{{ current_search }}" 
+                                   class="w-64 px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+                            <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+                        </div>
+                        
+                        <select id="role-filter" class="px-4 py-2 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400">
+                            <option value="">All Roles</option>
+                            <option value="student" {% if current_role_filter == 'student' %}selected{% endif %}>Students Only</option>
+                            <option value="alumni" {% if current_role_filter == 'alumni' %}selected{% endif %}>Alumni Only</option>
+                        </select>
+                        
+                        <button id="clear-filters" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+                            Clear
+                        </button>
                     </div>
                 </div>
             </div>
@@ -459,44 +539,106 @@
 
                 {% for post in posts %}
                 <div class="post-card">
-                    <div class="flex items-start space-x-4 mb-6">
-                        <div class="avatar text-lg bg-blue-500">{{ post.author_first_name[0]|default('U') }}</div>
-                        <div class="flex-1">
-                            <div class="flex items-center space-x-3 mb-2">
-                                <h3 class="font-bold text-lg text-gray-900">{{ post.author_first_name }} {{ post.author_last_name }}</h3>
-                                <span class="text-sm text-gray-500">@user</span>
-                                <span class="text-sm text-gray-500">•</span>
-                                <span class="text-sm text-gray-500">{{ post.created_at|default('now') }}</span>
-                            </div>
-                            <p class="text-gray-600 font-medium">{{ post.author_role|default('User') }}</p>
-                        </div>
-                    </div>
-                    {% if post.image %}
-                    <div class="mb-4">
-                        <img src="{{ post.image }}" alt="Post Image" style="max-width: 100%; border-radius: 12px;" />
-                    </div>
-                    {% endif %}
-                    <div class="mb-6">
-                        <p class="text-gray-700 mb-4 text-lg leading-relaxed">{{ post.description|default('No content available.') }}</p>
-                    </div>
-                    <div class="engagement-stats">
-                        <div class="engagement-item">
-                            <i class="far fa-thumbs-up"></i>
-                            <span class="font-semibold">Like</span>
-                        </div>
-                        <div class="engagement-item">
-                            <i class="far fa-comment"></i>
-                            <span class="font-semibold">Comment</span>
-                        </div>
-                        <div class="engagement-item ml-auto">
-                            <i class="fas fa-share"></i>
-                            <span class="font-semibold">Share</span>
-                        </div>
-                    </div>
+                    <!-- Post content -->
                 </div>
                 {% endfor %}
                 
-                {% if not posts %}
+                <!-- Loading state for posts -->
+                <div id="posts-container">
+                    {% if lazy_load %}
+                    <!-- Loading indicator -->
+                    <div id="posts-loading" class="post-card text-center">
+                        <div class="py-12">
+                            <div class="loading-spinner mx-auto mb-4"></div>
+                            <h3 class="text-lg font-semibold text-gray-600 mb-2">Loading posts...</h3>
+                            <p class="text-gray-500">Please wait while we fetch the latest updates.</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    {% for post in posts %}
+                    <div class="post-card">
+                        <div class="flex items-start space-x-4 mb-6">
+                            <div class="avatar text-lg bg-blue-500">{{ post.author_first_name[0]|default('U') }}</div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <h3 class="font-bold text-lg text-gray-900">{{ post.author_first_name }} {{ post.author_last_name }}</h3>
+                                    <span class="text-sm text-gray-500">@user</span>
+                                    <span class="text-sm text-gray-500">•</span>
+                                    <span class="text-sm text-gray-500">{{ post.created_at|default('now') }}</span>
+                                    
+                                    {% if post.is_owner %}
+                                    <div class="ml-auto flex space-x-2">
+                                        <button class="edit-post-btn text-blue-500 hover:text-blue-700" data-post-id="{{ post.id }}" title="Edit post">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="delete-post-btn text-red-500 hover:text-red-700" data-post-id="{{ post.id }}" title="Delete post">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <p class="text-gray-600 font-medium">{{ post.author_role|default('User') }}</p>
+                            </div>
+                        </div>
+                        {% if post.image %}
+                        <div class="mb-4">
+                            <img src="{{ post.image }}" alt="Post Image" style="max-width: 100%; border-radius: 12px;" />
+                        </div>
+                        {% endif %}
+                        <div class="mb-6">
+                            <h2 class="text-xl font-bold text-gray-900 mb-2">{{ post.title|default('Post') }}</h2>
+                            <p class="text-gray-700 mb-4 text-lg leading-relaxed">{{ post.description|default('No content available.') }}</p>
+                        </div>
+                        <div class="engagement-stats">
+                            {% if not post.is_owner %}
+                            <div class="engagement-item like-btn" data-post-id="{{ post.id }}" data-liked="{{ 'true' if post.user_liked else 'false' }}">
+                                <i class="{% if post.user_liked %}fas{% else %}far{% endif %} fa-thumbs-up"></i>
+                                <span class="font-semibold">Like</span>
+                                <span class="likes-count">({{ post.likes_count or 0 }})</span>
+                            </div>
+                            {% else %}
+                            <div class="engagement-item" style="color: #94a3b8; cursor: default;">
+                                <i class="far fa-thumbs-up"></i>
+                                <span class="font-semibold">Like</span>
+                                <span class="likes-count">({{ post.likes_count or 0 }})</span>
+                            </div>
+                            {% endif %}
+                            <div class="engagement-item comment-btn" data-post-id="{{ post.id }}">
+                                <i class="far fa-comment"></i>
+                                <span class="font-semibold">Comment</span>
+                                <span class="comments-count">({{ post.comments_count or 0 }})</span>
+                            </div>
+                            <div class="engagement-item ml-auto">
+                                <i class="fas fa-share"></i>
+                                <span class="font-semibold">Share</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Comments Section (Initially Hidden) -->
+                        <div class="comments-section" id="comments-{{ post.id }}" style="display: none;">
+                            <div class="comments-list" id="comments-list-{{ post.id }}">
+                                <!-- Comments will be loaded here -->
+                            </div>
+                            <div class="comment-form">
+                                <form class="add-comment-form" data-post-id="{{ post.id }}">
+                                    <div class="flex space-x-3">
+                                        <div class="avatar text-sm bg-green-500">{{ profile.first_name[0] if profile.first_name }}{{ profile.last_name[0] if profile.last_name }}</div>
+                                        <div class="flex-1">
+                                            <textarea name="content" placeholder="Write a comment..." class="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-400 focus:border-transparent" rows="2" required></textarea>
+                                            <div class="flex justify-end mt-2">
+                                                <button type="submit" class="btn-primary px-4 py-2 text-sm">Comment</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                
+                {% if not posts and not lazy_load %}
                 <div class="post-card text-center">
                     <div class="py-12">
                         <i class="fas fa-newspaper text-4xl text-gray-300 mb-4"></i>
@@ -513,7 +655,50 @@
         <i class="fas fa-plus"></i>
     </div>
 
+    <!-- Edit Post Modal -->
+    <div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-2xl w-full max-h-90vh overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold">Edit Post</h2>
+                        <button id="close-edit-modal" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <form id="edit-post-form">
+                        <input type="hidden" id="edit-post-id">
+                        <div class="mb-4">
+                            <input type="text" id="edit-title" placeholder="Post title..." 
+                                   class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent" required>
+                        </div>
+                        <div class="mb-4">
+                            <textarea id="edit-description" placeholder="What's on your mind?" 
+                                      class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent resize-none" 
+                                      rows="4" required></textarea>
+                        </div>
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" id="cancel-edit" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                                Cancel
+                            </button>
+                            <button type="submit" class="btn-primary px-6 py-2">
+                                Update Post
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Show loading indicator on page navigation
+        window.addEventListener('beforeunload', function() {
+            document.body.style.opacity = '0.7';
+            document.body.style.pointerEvents = 'none';
+        });
+        
         // Image preview functionality
         const imageUpload = document.getElementById('image-upload');
         const imagePreview = document.getElementById('image-preview');
@@ -536,12 +721,667 @@
             });
         });
 
+        // Like functionality
+        document.querySelectorAll('.like-btn').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const postId = this.dataset.postId;
+                const isLiked = this.dataset.liked === 'true';
+                
+                try {
+                    const response = await fetch(`/api/posts/${postId}/like`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // Update like button state
+                        const icon = this.querySelector('i');
+                        const countSpan = this.querySelector('.likes-count');
+                        
+                        if (result.liked) {
+                            icon.className = 'fas fa-thumbs-up';
+                            this.dataset.liked = 'true';
+                        } else {
+                            icon.className = 'far fa-thumbs-up';
+                            this.dataset.liked = 'false';
+                        }
+                        
+                        countSpan.textContent = `(${result.likes_count})`;
+                    } else if (result.error) {
+                        // Show error message for self-like attempts
+                        if (result.error.includes('own post')) {
+                            // Briefly show visual feedback
+                            this.style.color = '#ef4444';
+                            setTimeout(() => {
+                                this.style.color = '';
+                            }, 1000);
+                        } else {
+                            console.error('Like error:', result.error);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error toggling like:', error);
+                }
+            });
+        });
+
+        // Comment functionality with caching
+        const commentsCache = new Map(); // Cache for comments
+        
+        document.querySelectorAll('.comment-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const postId = this.dataset.postId;
+                const commentsSection = document.getElementById(`comments-${postId}`);
+                
+                if (commentsSection.style.display === 'none') {
+                    commentsSection.style.display = 'block';
+                    
+                    // Check if comments are already cached
+                    if (commentsCache.has(postId)) {
+                        displayComments(postId, commentsCache.get(postId));
+                    } else {
+                        loadComments(postId);
+                    }
+                } else {
+                    commentsSection.style.display = 'none';
+                }
+            });
+        });
+
+        // Add comment functionality
+        document.querySelectorAll('.add-comment-form').forEach(form => {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const postId = this.dataset.postId;
+                const formData = new FormData(this);
+                
+                try {
+                    const response = await fetch(`/api/posts/${postId}/comment`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // Clear form
+                        this.reset();
+                        
+                        // Update comments count
+                        const commentBtn = document.querySelector(`[data-post-id="${postId}"].comment-btn`);
+                        const countSpan = commentBtn.querySelector('.comments-count');
+                        countSpan.textContent = `(${result.comments_count})`;
+                        
+                        // Clear cache for this post to force fresh data
+                        commentsCache.delete(postId);
+                        
+                        // Reload comments
+                        loadComments(postId);
+                    } else {
+                        alert(result.error || 'Failed to add comment');
+                    }
+                } catch (error) {
+                    console.error('Error adding comment:', error);
+                    alert('Failed to add comment');
+                }
+            });
+        });
+
+        // Load comments function with loading indicator
+        async function loadComments(postId) {
+            const commentsList = document.getElementById(`comments-list-${postId}`);
+            
+            // Show loading indicator
+            commentsList.innerHTML = `
+                <div class="text-center py-4">
+                    <i class="fas fa-spinner fa-spin text-gray-400"></i>
+                    <span class="text-gray-500 ml-2">Loading comments...</span>
+                </div>
+            `;
+            
+            try {
+                const response = await fetch(`/api/posts/${postId}/comments`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Cache the comments
+                    commentsCache.set(postId, result.comments);
+                    displayComments(postId, result.comments);
+                } else {
+                    commentsList.innerHTML = `
+                        <div class="text-center py-4 text-red-500">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span class="ml-2">Failed to load comments</span>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading comments:', error);
+                commentsList.innerHTML = `
+                    <div class="text-center py-4 text-red-500">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span class="ml-2">Error loading comments</span>
+                    </div>
+                `;
+            }
+        }
+        
+        // Display comments function (separated for caching)
+        function displayComments(postId, comments) {
+            const commentsList = document.getElementById(`comments-list-${postId}`);
+            commentsList.innerHTML = '';
+            
+            if (comments.length === 0) {
+                commentsList.innerHTML = `
+                    <div class="text-center py-6 text-gray-500">
+                        <i class="far fa-comment text-2xl mb-2"></i>
+                        <p>No comments yet. Be the first to comment!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            comments.forEach(comment => {
+                const commentDiv = document.createElement('div');
+                commentDiv.className = 'comment-item p-4 border-b border-gray-100';
+                commentDiv.innerHTML = `
+                    <div class="flex space-x-3">
+                        <div class="avatar text-sm bg-gray-500">${comment.author_first_name[0]}${comment.author_last_name[0] || ''}</div>
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2">
+                                <span class="font-semibold text-sm">${comment.author_first_name} ${comment.author_last_name}</span>
+                                <span class="text-xs text-gray-500">${new Date(comment.created_at).toLocaleDateString()}</span>
+                            </div>
+                            <p class="text-gray-700 mt-1">${comment.content}</p>
+                        </div>
+                    </div>
+                `;
+                commentsList.appendChild(commentDiv);
+            });
+        }
+        
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const filter = this.dataset.filter;
+                const currentUrl = new URL(window.location);
+                currentUrl.searchParams.set('filter_type', filter);
+                currentUrl.searchParams.delete('search');
+                currentUrl.searchParams.delete('role_filter');
+                window.location.href = currentUrl.toString();
+            });
+        });
+        
+        // Search functionality
+        const searchInput = document.getElementById('search-input');
+        const roleFilter = document.getElementById('role-filter');
+        const clearFilters = document.getElementById('clear-filters');
+        
+        // Search on Enter key
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+        
+        // Role filter change
+        roleFilter.addEventListener('change', function() {
+            performSearch();
+        });
+        
+        // Clear filters
+        clearFilters.addEventListener('click', function() {
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.delete('search');
+            currentUrl.searchParams.delete('role_filter');
+            currentUrl.searchParams.delete('filter_type');
+            window.location.href = currentUrl.toString();
+        });
+        
+        function performSearch() {
+            const searchTerm = searchInput.value.trim();
+            const roleValue = roleFilter.value;
+            const currentUrl = new URL(window.location);
+                
+            // Clear filter type when searching
+            currentUrl.searchParams.delete('filter_type');
+                
+            if (searchTerm) {
+                currentUrl.searchParams.set('search', searchTerm);
+            } else {
+                currentUrl.searchParams.delete('search');
+            }
+                
+            if (roleValue) {
+                currentUrl.searchParams.set('role_filter', roleValue);
+            } else {
+                currentUrl.searchParams.delete('role_filter');
+            }
+                
+            window.location.href = currentUrl.toString();
+        }
+        
+        // Post editing functionality
+        const editModal = document.getElementById('edit-modal');
+        const editForm = document.getElementById('edit-post-form');
+        const editPostId = document.getElementById('edit-post-id');
+        const editTitle = document.getElementById('edit-title');
+        const editDescription = document.getElementById('edit-description');
+        
+        // Open edit modal
+        document.querySelectorAll('.edit-post-btn').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const postId = this.dataset.postId;
+                    
+                try {
+                    const response = await fetch(`/api/posts/${postId}`);
+                    const result = await response.json();
+                        
+                    if (result.success && result.post.is_owner) {
+                        editPostId.value = postId;
+                        editTitle.value = result.post.title;
+                        editDescription.value = result.post.description;
+                        editModal.classList.remove('hidden');
+                    } else {
+                        alert('You can only edit your own posts');
+                    }
+                } catch (error) {
+                    console.error('Error loading post:', error);
+                    alert('Failed to load post');
+                }
+            });
+        });
+        
+        // Close edit modal
+        document.getElementById('close-edit-modal').addEventListener('click', function() {
+            editModal.classList.add('hidden');
+        });
+        
+        document.getElementById('cancel-edit').addEventListener('click', function() {
+            editModal.classList.add('hidden');
+        });
+        
+        // Handle edit form submission
+        editForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+                
+            const postId = editPostId.value;
+            const formData = new FormData();
+            formData.append('title', editTitle.value);
+            formData.append('description', editDescription.value);
+                
+            try {
+                const response = await fetch(`/api/posts/${postId}`, {
+                    method: 'PUT',
+                    body: formData
+                });
+                    
+                const result = await response.json();
+                    
+                if (result.success) {
+                    editModal.classList.add('hidden');
+                    location.reload(); // Refresh to show updated post
+                } else {
+                    alert(result.error || 'Failed to update post');
+                }
+            } catch (error) {
+                console.error('Error updating post:', error);
+                alert('Failed to update post');
+            }
+        });
+        
+        // Post deletion functionality
+        document.querySelectorAll('.delete-post-btn').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const postId = this.dataset.postId;
+                    
+                if (confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+                    try {
+                        const response = await fetch(`/api/posts/${postId}`, {
+                            method: 'DELETE'
+                        });
+                            
+                        const result = await response.json();
+                            
+                        if (result.success) {
+                            location.reload(); // Refresh to remove deleted post
+                        } else {
+                            alert(result.error || 'Failed to delete post');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting post:', error);
+                        alert('Failed to delete post');
+                    }
+                }
+            });
+        });
+
         // Floating action button
         const floatingAction = document.querySelector('.floating-action');
         floatingAction.addEventListener('click', function() {
             // Scroll to post creation form
             document.querySelector('.post-card').scrollIntoView({ behavior: 'smooth' });
         });
+        
+        // Lazy loading for posts (performance optimization)
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check if lazy loading is enabled via a data attribute set in HTML
+            const lazyLoadEnabled = document.body.dataset.lazyLoad === 'true';
+            
+            if (!lazyLoadEnabled) {
+                return; // Exit if lazy loading is not enabled
+            }
+            
+            const postsContainer = document.getElementById('posts-container');
+            const loadingElement = document.getElementById('posts-loading');
+            
+            try {
+                // Get current URL parameters for filters
+                const urlParams = new URLSearchParams(window.location.search);
+                const filterType = urlParams.get('filter_type') || 'newest';
+                const search = urlParams.get('search') || '';
+                const roleFilter = urlParams.get('role_filter') || '';
+                
+                // Fetch posts via AJAX
+                const response = await fetch(`/api/student/posts?filter_type=${filterType}&search=${encodeURIComponent(search)}&role_filter=${roleFilter}&limit=10`);
+                const result = await response.json();
+                
+                // Remove loading indicator
+                if (loadingElement) {
+                    loadingElement.remove();
+                }
+                
+                if (result.success && result.posts && result.posts.length > 0) {
+                    // Generate posts HTML
+                    const postsHTML = result.posts.map(post => `
+                        <div class="post-card">
+                            <div class="flex items-start space-x-4 mb-6">
+                                <div class="avatar text-lg bg-blue-500">${post.author_first_name.charAt(0) || 'U'}</div>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-3 mb-2">
+                                        <h3 class="font-bold text-lg text-gray-900">${post.author_first_name} ${post.author_last_name}</h3>
+                                        <span class="text-sm text-gray-500">@user</span>
+                                        <span class="text-sm text-gray-500">•</span>
+                                        <span class="text-sm text-gray-500">${new Date(post.created_at).toLocaleDateString()}</span>
+                                        ${post.is_owner ? `
+                                        <div class="ml-auto flex space-x-2">
+                                            <button class="edit-post-btn text-blue-500 hover:text-blue-700" data-post-id="${post.id}" title="Edit post">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="delete-post-btn text-red-500 hover:text-red-700" data-post-id="${post.id}" title="Delete post">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                        ` : ''}
+                                    </div>
+                                    <p class="text-gray-600 font-medium">${post.author_role || 'User'}</p>
+                                </div>
+                            </div>
+                            ${post.image ? `
+                            <div class="mb-4">
+                                <img src="${post.image}" alt="Post Image" style="max-width: 100%; border-radius: 12px;" />
+                            </div>
+                            ` : ''}
+                            <div class="mb-6">
+                                <h2 class="text-xl font-bold text-gray-900 mb-2">${post.title || 'Post'}</h2>
+                                <p class="text-gray-700 mb-4 text-lg leading-relaxed">${post.description || 'No content available.'}</p>
+                            </div>
+                            <div class="engagement-stats">
+                                ${!post.is_owner ? `
+                                <div class="engagement-item like-btn" data-post-id="${post.id}" data-liked="${post.user_liked ? 'true' : 'false'}">
+                                    <i class="${post.user_liked ? 'fas' : 'far'} fa-thumbs-up"></i>
+                                    <span class="font-semibold">Like</span>
+                                    <span class="likes-count">(${post.likes_count || 0})</span>
+                                </div>
+                                ` : `
+                                <div class="engagement-item" style="color: #94a3b8; cursor: default;">
+                                    <i class="far fa-thumbs-up"></i>
+                                    <span class="font-semibold">Like</span>
+                                    <span class="likes-count">(${post.likes_count || 0})</span>
+                                </div>
+                                `}
+                                <div class="engagement-item comment-btn" data-post-id="${post.id}">
+                                    <i class="far fa-comment"></i>
+                                    <span class="font-semibold">Comment</span>
+                                    <span class="comments-count">(${post.comments_count || 0})</span>
+                                </div>
+                                <div class="engagement-item ml-auto">
+                                    <i class="fas fa-share"></i>
+                                    <span class="font-semibold">Share</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Comments Section (Initially Hidden) -->
+                            <div class="comments-section" id="comments-${post.id}" style="display: none;">
+                                <div class="comments-list" id="comments-list-${post.id}">
+                                    <!-- Comments will be loaded here -->
+                                </div>
+                                <div class="comment-form">
+                                    <form class="add-comment-form" data-post-id="${post.id}">
+                                        <div class="flex space-x-3">
+                                            <div class="avatar text-sm bg-green-500">{{ profile.first_name[0] if profile.first_name }}{{ profile.last_name[0] if profile.last_name }}</div>
+                                            <div class="flex-1">
+                                                <textarea name="content" placeholder="Write a comment..." class="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-400 focus:border-transparent" rows="2" required></textarea>
+                                                <div class="flex justify-end mt-2">
+                                                    <button type="submit" class="btn-primary px-4 py-2 text-sm">Comment</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                    
+                    postsContainer.innerHTML = postsHTML;
+                    
+                    // Re-initialize event listeners for dynamically loaded posts
+                    initializePostEventListeners();
+                    
+                } else {
+                    // No posts found
+                    postsContainer.innerHTML = `
+                        <div class="post-card text-center">
+                            <div class="py-12">
+                                <i class="fas fa-newspaper text-4xl text-gray-300 mb-4"></i>
+                                <h3 class="text-lg font-semibold text-gray-600 mb-2">No posts yet</h3>
+                                <p class="text-gray-500">Be the first to share! Students and alumni can post updates, experiences, and opportunities.</p>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('Error loading posts:', error);
+                if (loadingElement) {
+                    loadingElement.innerHTML = `
+                        <div class="py-12 text-center">
+                            <div class="text-red-500 mb-4">
+                                <i class="fas fa-exclamation-triangle text-4xl mb-2"></i>
+                                <h3 class="text-lg font-semibold mb-2">Failed to load posts</h3>
+                                <p class="text-gray-500">Please refresh the page to try again.</p>
+                            </div>
+                            <button onclick="location.reload()" class="btn-primary px-6 py-2 mt-4">
+                                <i class="fas fa-refresh mr-2"></i>Refresh Page
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+        });
+        
+        // Function to initialize event listeners for posts (used for both static and dynamic content)
+        function initializePostEventListeners() {
+            // Reinitialize like buttons
+            document.querySelectorAll('.like-btn').forEach(btn => {
+                btn.removeEventListener('click', handleLikeClick); // Remove existing listeners
+                btn.addEventListener('click', handleLikeClick);
+            });
+            
+            // Reinitialize comment buttons
+            document.querySelectorAll('.comment-btn').forEach(btn => {
+                btn.removeEventListener('click', handleCommentClick);
+                btn.addEventListener('click', handleCommentClick);
+            });
+            
+            // Reinitialize comment forms
+            document.querySelectorAll('.add-comment-form').forEach(form => {
+                form.removeEventListener('submit', handleCommentSubmit);
+                form.addEventListener('submit', handleCommentSubmit);
+            });
+            
+            // Reinitialize edit/delete buttons
+            document.querySelectorAll('.edit-post-btn').forEach(btn => {
+                btn.removeEventListener('click', handleEditClick);
+                btn.addEventListener('click', handleEditClick);
+            });
+            
+            document.querySelectorAll('.delete-post-btn').forEach(btn => {
+                btn.removeEventListener('click', handleDeleteClick);
+                btn.addEventListener('click', handleDeleteClick);
+            });
+        }
+        
+        // Extracted event handler functions for reuse
+        async function handleLikeClick() {
+            const postId = this.dataset.postId;
+            const isLiked = this.dataset.liked === 'true';
+            
+            try {
+                const response = await fetch(`/api/posts/${postId}/like`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    const icon = this.querySelector('i');
+                    const countSpan = this.querySelector('.likes-count');
+                    
+                    if (result.liked) {
+                        icon.className = 'fas fa-thumbs-up';
+                        this.dataset.liked = 'true';
+                    } else {
+                        icon.className = 'far fa-thumbs-up';
+                        this.dataset.liked = 'false';
+                    }
+                    
+                    countSpan.textContent = `(${result.likes_count})`;
+                } else if (result.error) {
+                    if (result.error.includes('own post')) {
+                        this.style.color = '#ef4444';
+                        setTimeout(() => {
+                            this.style.color = '';
+                        }, 1000);
+                    } else {
+                        console.error('Like error:', result.error);
+                    }
+                }
+            } catch (error) {
+                console.error('Error toggling like:', error);
+            }
+        }
+        
+        function handleCommentClick() {
+            const postId = this.dataset.postId;
+            const commentsSection = document.getElementById(`comments-${postId}`);
+            
+            if (commentsSection.style.display === 'none') {
+                commentsSection.style.display = 'block';
+                
+                if (commentsCache.has(postId)) {
+                    displayComments(postId, commentsCache.get(postId));
+                } else {
+                    loadComments(postId);
+                }
+            } else {
+                commentsSection.style.display = 'none';
+            }
+        }
+        
+        async function handleCommentSubmit(e) {
+            e.preventDefault();
+            
+            const postId = this.dataset.postId;
+            const formData = new FormData(this);
+            
+            try {
+                const response = await fetch(`/api/posts/${postId}/comment`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    this.reset();
+                    
+                    const commentBtn = document.querySelector(`[data-post-id="${postId}"].comment-btn`);
+                    const countSpan = commentBtn.querySelector('.comments-count');
+                    countSpan.textContent = `(${result.comments_count})`;
+                    
+                    commentsCache.delete(postId);
+                    loadComments(postId);
+                } else {
+                    alert(result.error || 'Failed to add comment');
+                }
+            } catch (error) {
+                console.error('Error adding comment:', error);
+                alert('Failed to add comment');
+            }
+        }
+        
+        async function handleEditClick() {
+            const postId = this.dataset.postId;
+                
+            try {
+                const response = await fetch(`/api/posts/${postId}`);
+                const result = await response.json();
+                    
+                if (result.success && result.post.is_owner) {
+                    editPostId.value = postId;
+                    editTitle.value = result.post.title;
+                    editDescription.value = result.post.description;
+                    editModal.classList.remove('hidden');
+                } else {
+                    alert('You can only edit your own posts');
+                }
+            } catch (error) {
+                console.error('Error loading post:', error);
+                alert('Failed to load post');
+            }
+        }
+        
+        async function handleDeleteClick() {
+            const postId = this.dataset.postId;
+                
+            if (confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+                try {
+                    const response = await fetch(`/api/posts/${postId}`, {
+                        method: 'DELETE'
+                    });
+                        
+                    const result = await response.json();
+                        
+                    if (result.success) {
+                        location.reload();
+                    } else {
+                        alert(result.error || 'Failed to delete post');
+                    }
+                } catch (error) {
+                    console.error('Error deleting post:', error);
+                    alert('Failed to delete post');
+                }
+            }
+        }
     </script>
 </body>
 </html>
